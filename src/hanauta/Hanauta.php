@@ -61,12 +61,40 @@ $_pvars = $obj["request"]->post2vars();
 $_fvars = $obj["request"]->file2vars();
 
 
+// サーバー種類設定
+$server = "";
+if(is_file($dir_cnf.$fw_arr["INI_SERVER"])){
+	$server_arr = parse_ini_file($dir_cnf.$fw_arr["INI_SERVER"]);
+	if(is_array($server_arr)){
+		foreach($server_arr as $key => $value){
+			if(isset($_srvars["HTTP_HOST"]) && $_srvars["HTTP_HOST"] == $value){
+				$server = $key;
+				break;
+			}
+		}
+	}
+}
+if(empty($server)){
+	$server_arr = parse_ini_file($dir_fw."conf/server.ini");
+	foreach($server_arr as $key => $value){
+		if(isset($_srvars["HTTP_HOST"]) && $_srvars["HTTP_HOST"] == $value){
+			$server = $key;
+			break;
+		}
+	}
+}
+if(!empty($server)){
+	$server = strtolower($server);
+	$srv_cnf_dir = $dir_cnf.$server."/";
+}else{
+	$srv_cnf_dir = $dir_cnf;
+}
+
 /**
  * DB接続
- * 
+ *
  */
-
-if(is_file($dir_cnf.$fw_arr["INI_DB"])) $obj["read_db"]->connect_db($dir_cnf.$fw_arr["INI_DB"]);
+if(is_file($srv_cnf_dir.$fw_arr["INI_DB"])) $obj["read_db"]->connect_db($srv_cnf_dir.$fw_arr["INI_DB"]);
 
 /**
  * Hanautaベースクラス
@@ -80,7 +108,7 @@ class Hanauta{
 	/**
 	 * コンストラクタ
 	 */
-	function Hanauta(){
+	function __construct(){
 		// スクリプトファイルパスを取得
 		$script = NULL;
 		if(isset($_SERVER["SCRIPT_NAME"])) $script = preg_replace("/\.php.*/",".php",$_SERVER["SCRIPT_NAME"]);
@@ -89,12 +117,12 @@ class Hanauta{
 			define("SCRIPT_NAME",$script);
 			define("SCRIPT_DIR",dirname($script));
 		}
-		
+
 		// ローカルサーバーか否か
 		$localhost = false;
 		if(isset($_SERVER["SERVER_ADDR"]) && $_SERVER["SERVER_ADDR"] == "127.0.0.1") $localhost = true;
 		define("LOCALHOST",$localhost);
-		
+
 		// エラーコード設定
 		$dir_fw = constant("DIR_FW");
 		$dir_cnf = constant("DIR_CNF");
@@ -103,10 +131,10 @@ class Hanauta{
 		// プロジェクト側にあればそちらを優先
 		if(is_file($dir_cnf.$fw_arr["INI_ERROR"])) $this->read_ini($dir_cnf.$fw_arr["INI_ERROR"]);
 		else $this->read_ini($dir_fw."conf/error.ini");
-		
+
 		// フレームワークバージョン設定
 		$this->read_ini($dir_fw."conf/version.ini");
-		
+
 		// スクリプトバージョン設定
 		if(is_file($dir_cnf."version.ini")) $this->read_ini($dir_cnf."version.ini");
 	}
