@@ -29,11 +29,11 @@ if($mode == "rss") header($heder_xml);
 else header($heder_html);
 
 // セッション削除
-$obj["request"]->del_ses($_svars,array("auth"));
-if(isset($_gvars["login_id"])) $obj["request"]->del_ses($_svars,array());
+$Hanauta->obj["request"]->del_ses($Hanauta->_svars,array("auth"));
+if(isset($Hanauta->_gvars["login_id"])) $Hanauta->obj["request"]->del_ses($Hanauta->_svars,array());
 
 
-$obj_ext["test"]->test();
+$Hanauta->obj_ext["test"]->test();
 
 
 

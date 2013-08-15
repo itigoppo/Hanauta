@@ -16,7 +16,7 @@ $dir_fw = constant("DIR_FW");
 require_once($dir_fw."Hanauta.php");
 $Hanauta = new Hanauta();
 // 処理時間計測開始
-$obj["benchmark"]->start();
+$Hanauta->obj["benchmark"]->start();
 /*
 // Smarty起動
 $dir_smarty = constant("DIR_SMARTY");
@@ -50,7 +50,6 @@ elseif(isset($_pvars["page"])) $page = $_pvars["page"];
 if(!isset($page)) $page = 1;
 
 // 共通変数
-$localhost = constant("LOCALHOST");
 $site_title = constant("SITE_TITLE");
 $site_url = constant("SITE_URL");
 $script_file = constant("SCRIPT_NAME");
@@ -65,7 +64,7 @@ $script_ver_org = constant("SCR_VER_ORG");
 $script_url_org = constant("SCR_URL_ORG");
 //$fw_ini_db = constant("DIR_CNF").$fw_arr["INI_DB"];
 //$ini_db_arr = parse_ini_file($fw_ini_db);
-$agent = $obj["mobile"]->check_agent($_srvars["HTTP_USER_AGENT"]);
+$agent = $Hanauta->obj["mobile"]->check_agent($Hanauta->_srvars["HTTP_USER_AGENT"]);
 $sid = htmlspecialchars(SID);
 $sid = session_name()."=".session_id();
 
@@ -74,7 +73,6 @@ $sid = session_name()."=".session_id();
  */
 // テンプレート用変数設定
 /* Smarty用使うならコメント解除
-$smarty->assign("localhost",$localhost);
 $smarty->assign("site_title",$site_title);
 $smarty->assign("site_url",$site_url);
 $smarty->assign("script_file",$script_file);

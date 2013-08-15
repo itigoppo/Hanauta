@@ -16,11 +16,36 @@
  * @package Hanauta
  */
 
+require_once(dirname(dirname(__FILE__))."/vendors/lib3gk/lib3gk.php");
+
 class mobile{
+
 	/**
 	 * コンストラクタ
 	 */
 	function __construct(){
+		$this->Lib3gk = new Lib3gk();
+		//$this->Lib3gk->initialize();
+	}
+
+	/**
+	 * キャリアチェック
+	 *
+	 * @access public
+	 * @return string	キャリア
+	 */
+	function get_carrier(){
+		$rtn = NULL;
+		if($this->Lib3gk->is_iphone() || $this->Lib3gk->is_android()){
+			$str = "sp";
+		}else if($this->Lib3gk->is_ktai() || $this->Lib3gk->is_phs()){
+			$str = "mb";
+		}else{
+			$str = "pc";
+		}
+
+		$rtn = $str;
+		return $rtn;
 	}
 
 	/**

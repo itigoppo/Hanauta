@@ -1,14 +1,14 @@
 <?php
 /**
  * Lib3gk, supports Japanese mobile phone sites coding.
- * It provides many functions such as a carrier check to use Referer or E-mail, 
+ * It provides many functions such as a carrier check to use Referer or E-mail,
  * conversion of an Emoji, and more.
  *
  * PHP versions 5
  *
  * Lib3gk
  * Copyright 2009-2012, ECWorks.
- 
+
  * Licensed under The GNU General Public Licence
  * Redistributions of files must retain the above copyright notice.
  *
@@ -31,7 +31,7 @@ require_once(dirname(__FILE__).'/lib3gk_def.php');
  * @subpackage    Lib3gk.libs
  */
 class Lib3gkHtml {
-	
+
 	//================================================================
 	//Properties
 	//================================================================
@@ -45,7 +45,7 @@ class Lib3gkHtml {
 	 * @access private
 	 */
 	var $__carrier = null;
-	
+
 	/**
 	 * Lib3gkMachineのインスタンス
 	 *
@@ -53,7 +53,7 @@ class Lib3gkHtml {
 	 * @access private
 	 */
 	var $__machine = null;
-	
+
 	//------------------------------------------------
 	//Parameters
 	//------------------------------------------------
@@ -64,29 +64,29 @@ class Lib3gkHtml {
 	 * @access protected
 	 */
 	var $_params = array(
-		
+
 		//Encoding params
 		//
-		'input_encoding' => 'UTF-8', 
-		'output_encoding' => 'UTF-8', 
-		
+		'input_encoding' => 'UTF-8',
+		'output_encoding' => 'UTF-8',
+
 		//Virtual screen params
 		//
-		'default_screen_size' => array(240, 320), 
-		
+		'default_screen_size' => array(240, 320),
+
 		//XML params
 		//
-		'use_xml' => false, 
-		
+		'use_xml' => false,
+
 		//Inline stylesheet params
 		//
-		'style' => array(), 
-		
+		'style' => array(),
+
 		//デフォルトのフォントサイズ
 		//
-		'default_font_size' => 'medium', 
+		'default_font_size' => 'medium',
 	);
-	
+
 	/**
 	 * Lib3gkHtml::url()のコールバック
 	 *
@@ -94,8 +94,8 @@ class Lib3gkHtml {
 	 * @access protected
 	 */
 	var $_url_callback = null;
-	
-	
+
+
 	/**
 	 * 指定したフォントタグのスタック
 	 *
@@ -103,7 +103,7 @@ class Lib3gkHtml {
 	 * @access private
 	 */
 	var $__fontTags = array();
-	
+
 	/**
 	 * 各キャリアの対応フォントサイズテーブル
 	 *
@@ -112,14 +112,14 @@ class Lib3gkHtml {
 	 */
 	var $__fontSizeTable = array(
 		'low' => array(
-			KTAI_CARRIER_KDDI => array('small' => '15px', 'medium' => '22px', 'large' => '32px'), 
-		), 
+			KTAI_CARRIER_KDDI => array('small' => '15px', 'medium' => '22px', 'large' => '32px'),
+		),
 		'high' => array(
-			KTAI_CARRIER_DOCOMO => array('small' => 'medium', 'medium' => 'large', 'large' => 'x-large'), 
-			KTAI_CARRIER_SOFTBANK => array('small' => 'medium', 'medium' => 'large', 'large' => 'x-large'), 
-		), 
+			KTAI_CARRIER_DOCOMO => array('small' => 'medium', 'medium' => 'large', 'large' => 'x-large'),
+			KTAI_CARRIER_SOFTBANK => array('small' => 'medium', 'medium' => 'large', 'large' => 'x-large'),
+		),
 	);
-	
+
 	/**
 	 * タグのテンプレート
 	 *
@@ -127,7 +127,7 @@ class Lib3gkHtml {
 	 * @access private
 	 */
 	var $__fontTagBase = array('<%tag% style="font-size: %size%;%style%">', '</%tag%>');
-	
+
 	/**
 	 * 各キャリアで使用するタグ
 	 *
@@ -135,12 +135,12 @@ class Lib3gkHtml {
 	 * @access private
 	 */
 	var $__fontTagTable = array(
-		KTAI_CARRIER_UNKNOWN => 'div', 
-		KTAI_CARRIER_DOCOMO => 'div', 
-		KTAI_CARRIER_KDDI => 'font', 
-		KTAI_CARRIER_SOFTBANK => 'font', 
+		KTAI_CARRIER_UNKNOWN => 'div',
+		KTAI_CARRIER_DOCOMO => 'div',
+		KTAI_CARRIER_KDDI => 'font',
+		KTAI_CARRIER_SOFTBANK => 'font',
 	);
-	
+
 	//================================================================
 	//Methods
 	//================================================================
@@ -154,7 +154,7 @@ class Lib3gkHtml {
 	 * @access public
 	 * @static
 	 */
-	function &get_instance(){
+	static function &get_instance(){
 		static $instance = array();
 		if(!$instance){
 			$instance[0] =& new Lib3gkHtml();
@@ -162,8 +162,8 @@ class Lib3gkHtml {
 		}
 		return $instance[0];
 	}
-	
-	
+
+
 	/**
 	 * 初期化
 	 *
@@ -173,8 +173,8 @@ class Lib3gkHtml {
 	function initialize(){
 		$this->_url_callback = array($this, '__url_callback_func');
 	}
-	
-	
+
+
 	/**
 	 * 後始末
 	 *
@@ -183,8 +183,8 @@ class Lib3gkHtml {
 	 */
 	function shutdown(){
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Load subclasses
 	//------------------------------------------------
@@ -202,8 +202,8 @@ class Lib3gkHtml {
 		$this->_params = array_merge($this->_params, $this->__carrier->_params);
 		$this->__carrier->_params = &$this->_params;
 	}
-	
-	
+
+
 	/**
 	 * 機種情報関連サブクラスの読み込み
 	 *
@@ -216,8 +216,8 @@ class Lib3gkHtml {
 		}
 		$this->__machine = Lib3gkMachine::get_instance();
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkHtml methods
 	//------------------------------------------------
@@ -231,8 +231,8 @@ class Lib3gkHtml {
 	function url($url){
 		return call_user_func($this->_url_callback, $url);
 	}
-	
-	
+
+
 	/**
 	 * URLの生成(デフォルトの処理)
 	 *
@@ -243,8 +243,8 @@ class Lib3gkHtml {
 	function __url_callback_func($url){
 		return htmlspecialchars($url, ENT_QUOTES);
 	}
-	
-	
+
+
 	/**
 	 * imageタグ付きの文字列を入手
 	 *
@@ -261,7 +261,7 @@ class Lib3gkHtml {
 	 * ※その他キーについてもimgタグに付加します
 	 */
 	function image($url, $htmlAttribute = array(), $stretch = true){
-		
+
 		$url = $this->url($url);
 		$str = '<img src="'.$url.'"';
 		if(isset($htmlAttribute['width']) && isset($htmlAttribute['height'])){
@@ -278,11 +278,11 @@ class Lib3gkHtml {
 			$str .= ' /';
 		}
 		$str .= '>';
-		
+
 		return $str;
 	}
-	
-	
+
+
 	/**
 	 * 指定のサイズの描画エリアにあった画像になるようストレッチの計算をする
 	 *
@@ -294,27 +294,27 @@ class Lib3gkHtml {
 	 * @access public
 	 */
 	function stretch_image_size($width, $height, $default_width = null, $default_height = null){
-		
+
 		$this->__load_machine();
-		
+
 		if($default_width === null){
 			$default_width = $this->_params['default_screen_size'][0];
 		}
 		if($default_height === null){
 			$default_height = $this->_params['default_screen_size'][1];
 		}
-		
+
 		$arr = $this->__machine->get_machineinfo();
 		$sx = $arr['screen_size'][0];
 		$sy = $arr['screen_size'][1];
-		
+
 		$dx = $sx * $width  / $default_width;
 		$dy = $sx * $height / $default_width;
-		
+
 		return array($dx, $dy);
 	}
-	
-	
+
+
 	/**
 	 * 登録スタイルの呼び出し
 	 * $this->_params['style']内に登録したスタイルを呼び出します
@@ -325,20 +325,20 @@ class Lib3gkHtml {
 	 * @access public
 	 */
 	function style($name, $display = true){
-		
+
 		$str = '';
-		
+
 		if(isset($this->_params['style'][$name])){
 			$str = $this->_params['style'][$name];
 		}
 		if($display){
 			echo $str;
 		}
-		
+
 		return $str;
 	}
-	
-	
+
+
 	/**
 	 * QRコードの生成(Google chart APIの利用)
 	 *
@@ -351,19 +351,19 @@ class Lib3gkHtml {
 	 *
 	 * ※パラメータについては下記URLを参照してください
 	 * http://code.google.com/intl/ja/apis/chart/docs/gallery/qr_codes.html
-	 
+
 	 */
 	function get_qrcode($str, $options = array(), $input_encoding = null, $output_encoding = null){
-		
+
 		$options = array_merge(array('width' => 220, 'height' => 220), $options);
-		
+
 		if($input_encoding === null){
 			$input_encoding = $this->_params['input_encoding'];
 		}
 		if($output_encoding === null){
 			$output_encoding = $this->_params['output_encoding'];
 		}
-		
+
 		$url = 'http://chart.apis.google.com/chart?cht=qr';
 		$url .= '&chs='.$options['width'].'x'.$options['height'];
 		if($input_encoding != KTAI_ENCODING_UTF8){
@@ -392,8 +392,8 @@ class Lib3gkHtml {
 		}
 		return $this->image($url, $options);
 	}
-	
-	
+
+
 	/**
 	 * Google static Maps APIを用いて地図表示
 	 *
@@ -406,18 +406,18 @@ class Lib3gkHtml {
 	 *
 	 * ※パラメータについては下記URLを参照してください
 	 * http://code.google.com/intl/ja/apis/maps/documentation/staticmaps/
-	 
+
 	 */
 	function get_static_maps( $lat, $lon, $options = array(), $api_key = null){
-		
+
 		$default_options = array(
-			'zoom' => 15, 
-			'format' => 'jpg', 
-			'maptype' => 'mobile', 
+			'zoom' => 15,
+			'format' => 'jpg',
+			'maptype' => 'mobile',
 			'sensor' => false,
 		);
 		$options = array_merge($default_options, $options);
-		
+
 		//center
 		//
 		if($lat == '' || $lon == ''){
@@ -433,7 +433,7 @@ class Lib3gkHtml {
 			}
 			unset($options['center']);
 		}
-		
+
 		//size
 		//
 		if(!empty($options['size'])){
@@ -449,8 +449,8 @@ class Lib3gkHtml {
 			$height = $width;
 		}
 		list($width, $height) = $this->stretch_image_size($width, $height);
-		
-		
+
+
 		//markers
 		//
 		if(!empty($options['markers'])){
@@ -478,7 +478,7 @@ class Lib3gkHtml {
 			}
 			unset($options['markers']);
 		}
-		
+
 		//path
 		//
 		if(!empty($options['path'])){
@@ -491,7 +491,7 @@ class Lib3gkHtml {
 			}
 			$points = $path['points'];
 			unset($path['points']);
-			
+
 			$str = '';
 			foreach($path as $fkey => $fvalue){
 				if($str != ''){
@@ -506,7 +506,7 @@ class Lib3gkHtml {
 			$path = $str;
 			unset($options['path']);
 		}
-		
+
 		//span
 		//
 		if(!empty($options['span'])){
@@ -518,12 +518,12 @@ class Lib3gkHtml {
 			}
 			unset($options['span']);
 		}
-		
+
 		//sensor
 		//
 		$sensor = $options['sensor'];
 		unset($options['sensor']);
-		
+
 		//api_key
 		//
 		if($api_key === null){
@@ -537,7 +537,7 @@ class Lib3gkHtml {
 			}
 			unset($options['key']);
 		}
-		
+
 		$url = 'http://maps.google.com/staticmap?';
 		$url .= 'center='.$lat.','.$lon;
 		$url .= '&size='.$width.'x'.$height;
@@ -555,14 +555,14 @@ class Lib3gkHtml {
 		}
 		$url .= '&sensor='.($sensor ? 'true' : 'false');
 		$url .= '&key='.$api_key;
-		
+
 		return $this->image($url, array('width' => $width, 'height' => $height), false);
 	}
-	
+
 	/**
 	 * 同サイズフォント指定
 	 * 機種判別してフォントサイズの差異をなくします
-	 * 
+	 *
 	 * ※XHTMLの場合のみ有効です
 	 * 　フォントサイズは「small」「medium」「large」が指定可能。それ以外の値はそのまま出力します
 	 * 　デフォルトは$__params['default_font_size']の値です。無指定の場合は「medium」です。
@@ -576,11 +576,11 @@ class Lib3gkHtml {
 	 *
 	 */
 	function font($size = null, $tag = null, $style = null, $display = true){
-		
+
 		if(!$this->_params['use_xml']){
 			return null;
 		}
-		
+
 		if($size === null){
 			if(isset($this->_params['default_font_size'])){
 				$size = $this->_params['default_font_size'];
@@ -588,15 +588,15 @@ class Lib3gkHtml {
 				$size = 'medium';
 			}
 		}
-		
+
 		if($style !== null){
 			$style = $this->style($style, false);
 		}
-		
+
 		$this->__load_machine();
 		$machine = $this->__machine->get_machineinfo();
 		$carrier = $machine['carrier'];
-		
+
 		if($tag === null){
 			if($carrier == KTAI_CARRIER_DOCOMO || $carrier == KTAI_CARRIER_KDDI || $carrier == KTAI_CARRIER_SOFTBANK){
 				$tag = $this->__fontTagTable[$carrier];
@@ -604,11 +604,11 @@ class Lib3gkHtml {
 				$tag = $this->__fontTagTable[KTAI_CARRIER_UNKNOWN];
 			}
 		}
-		
+
 		if($carrier != KTAI_CARRIER_DOCOMO && $carrier != KTAI_CARRIER_KDDI && $carrier != KTAI_CARRIER_SOFTBANK){
 			$carrier = KTAI_CARRIER_DOCOMO;
 		}
-		
+
 		$reso = 'low';
 		if(isset($machine['font_size'])){
 			if(isset($machine['font_size']['reso'])){
@@ -624,19 +624,19 @@ class Lib3gkHtml {
 		if(isset($this->__fontSizeTable[$reso][$carrier][$size])){
 			$size = $this->__fontSizeTable[$reso][$carrier][$size];
 		}
-		
+
 		$search = array('%tag%', '%size%', '%style%');
 		$replace = array($tag, $size, $style);
-		
+
 		$result = str_replace($search, $replace, $this->__fontTagBase[0]);
 		$this->__fontTags[] = str_replace('%tag%', $tag, $this->__fontTagBase[1]);
-		
+
 		if($display){
 			echo $result;
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * フォントタグの終端
 	 * 直近に処理されたfont()に対応する閉じタグを出力します
@@ -647,13 +647,13 @@ class Lib3gkHtml {
 	 *
 	 */
 	function fontend($display = true){
-		
+
 		$result = null;
-		
+
 		if(!empty($this->__fontTags)){
 			$result = array_pop($this->__fontTags);
 		}
-		
+
 		if($display){
 			echo $result;
 		}
