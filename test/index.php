@@ -33,9 +33,9 @@ $Hanauta->obj["request"]->del_ses($Hanauta->_svars,array("auth"));
 if(isset($Hanauta->_gvars["login_id"])) $Hanauta->obj["request"]->del_ses($Hanauta->_svars,array());
 
 
+//$Hanauta->obj["ponpon"]->pr($Hanauta);
+
 $Hanauta->obj_ext["test"]->test();
-
-
 
 
 
@@ -46,9 +46,9 @@ $Hanauta->obj_ext["test"]->test();
 
 
 // 処理時間計測終了
-$obj["benchmark"]->end();
+$Hanauta->obj["benchmark"]->end();
 
 
-print $obj["benchmark"]->score;
+print $Hanauta->obj["benchmark"]->score;
 
 ?>

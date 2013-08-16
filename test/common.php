@@ -14,7 +14,7 @@
 // フレームワーク起動
 $dir_fw = constant("DIR_FW");
 require_once($dir_fw."Hanauta.php");
-$Hanauta = new Hanauta();
+$Hanauta = new Hanauta($dir_fw);
 // 処理時間計測開始
 $Hanauta->obj["benchmark"]->start();
 /*
@@ -22,7 +22,7 @@ $Hanauta->obj["benchmark"]->start();
 $dir_smarty = constant("DIR_SMARTY");
 require_once($dir_smarty."Smarty.class.php");
 $smarty = new Smarty();
-$smarty->template_dir = constant("DIR_SMARTY_TMPL");
+$smarty->template_dir = constant("DIR_SMARTY_TMPL")."/".$Hanauta->carrier;
 $smarty->compile_dir = constant("DIR_SMARTY_COMPILE");
 $smarty->cache_dir = constant("DIR_SMARTY_CACHE");
 */
@@ -36,17 +36,17 @@ $smarty->cache_dir = constant("DIR_SMARTY_CACHE");
  * 変数設定
  */
 // リクエストデータ取得
-if(isset($_gvars["mode"])) $mode = $_gvars["mode"];
-elseif(isset($_pvars["mode"])) $mode = $_pvars["mode"];
+if(isset($Hanauta->_gvars["mode"])) $mode = $Hanauta->_gvars["mode"];
+elseif(isset($Hanauta->_pvars["mode"])) $mode = $Hanauta->_pvars["mode"];
 if(!isset($mode)) $mode = NULL;
-if(isset($_gvars["func"])) $func = $_gvars["func"];
-elseif(isset($_pvars["func"])) $func = $_pvars["func"];
+if(isset($Hanauta->_gvars["func"])) $func = $Hanauta->_gvars["func"];
+elseif(isset($Hanauta->_pvars["func"])) $func = $Hanauta->_pvars["func"];
 if(!isset($func)) $func = NULL;
-if(isset($_gvars["view"])) $view = $_gvars["view"];
-elseif(isset($_pvars["view"])) $view = $_pvars["view"];
+if(isset($Hanauta->_gvars["view"])) $view = $Hanauta->_gvars["view"];
+elseif(isset($Hanauta->_pvars["view"])) $view = $Hanauta->_pvars["view"];
 if(!isset($view)) $view = NULL;
-if(isset($_gvars["page"])) $page = $_gvars["page"];
-elseif(isset($_pvars["page"])) $page = $_pvars["page"];
+if(isset($Hanauta->_gvars["page"])) $page = $Hanauta->_gvars["page"];
+elseif(isset($Hanauta->_pvars["page"])) $page = $Hanauta->_pvars["page"];
 if(!isset($page)) $page = 1;
 
 // 共通変数
@@ -62,9 +62,6 @@ $script_url = constant("SCR_URL");
 $script_name_org = constant("SCR_NAME_ORG");
 $script_ver_org = constant("SCR_VER_ORG");
 $script_url_org = constant("SCR_URL_ORG");
-//$fw_ini_db = constant("DIR_CNF").$fw_arr["INI_DB"];
-//$ini_db_arr = parse_ini_file($fw_ini_db);
-$agent = $Hanauta->obj["mobile"]->check_agent($Hanauta->_srvars["HTTP_USER_AGENT"]);
 $sid = htmlspecialchars(SID);
 $sid = session_name()."=".session_id();
 

@@ -149,6 +149,7 @@ class read_db{
 		$field = ($field != NULL) ? $field : "*";
 		if($where != NULL) $where = " where ".$where;
 		$sql = "select ".$field." from ".$table.$where;
+		print $sql;
 		if(isset($param) && is_array($param)){
 			if(isset($param["groupby"])) $sql .=" group by ".$param["groupby"];
 			if(isset($param["having"])) $sql .=" having ".$param["having"];

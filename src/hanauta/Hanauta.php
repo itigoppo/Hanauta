@@ -26,15 +26,16 @@ class Hanauta{
 	var $_cvars;
 	var $_pvars;
 	var $_fvars;
+	var $server;
+	var $carrier;
+	var $db_prefix;
 
 	/**
 	 * コンストラクタ
 	 */
-	function __construct(){
-
+	function __construct($dir_fw){
 
 		// フレームワーク設定ファイル
-		$dir_fw = constant("DIR_FW");
 		$dir_cnf = constant("DIR_CNF");
 		$ini_fw = constant("INI_FW");
 		$fw_arr = parse_ini_file($ini_fw);
@@ -73,45 +74,44 @@ class Hanauta{
 		session_start();
 		// リクエスト変数設定
 		// SERVER変数
-		$_srvars = array();
-		$_srvars = $this->obj["request"]->ser2vars();
+		$this->_srvars = array();
+		$this->_srvars = $this->obj["request"]->ser2vars();
 		// SESSION変数
-		$_svars = $this->obj["request"]->ses2vars();
+		$this->_svars = $this->obj["request"]->ses2vars();
 		// GET変数
-		$_gvars = $this->obj["request"]->get2vars();
+		$this->_gvars = $this->obj["request"]->get2vars();
 		// COOKIE変数
-		$_cvars = $this->obj["request"]->cookie2vars();
+		$this->_cvars = $this->obj["request"]->cookie2vars();
 		// POST変数
-		$_pvars = $this->obj["request"]->post2vars();
+		$this->_pvars = $this->obj["request"]->post2vars();
 		// FILES変数
-		$_fvars = $this->obj["request"]->file2vars();
-
+		$this->_fvars = $this->obj["request"]->file2vars();
 
 		// サーバー種類設定
-		$server = "";
+		$this->server = "";
 		if(is_file($dir_cnf.$fw_arr["INI_SERVER"])){
 			$server_arr = parse_ini_file($dir_cnf.$fw_arr["INI_SERVER"]);
 			if(is_array($server_arr)){
 				foreach($server_arr as $key => $value){
-					if(isset($_srvars["HTTP_HOST"]) && $_srvars["HTTP_HOST"] == $value){
-						$server = $key;
+					if(isset($this->_srvars["HTTP_HOST"]) && $this->_srvars["HTTP_HOST"] == $value){
+						$this->server = $key;
 						break;
 					}
 				}
 			}
 		}
-		if(empty($server)){
+		if(empty($this->server)){
 			$server_arr = parse_ini_file($dir_fw."conf/server.ini");
 			foreach($server_arr as $key => $value){
-				if(isset($_srvars["HTTP_HOST"]) && $_srvars["HTTP_HOST"] == $value){
-					$server = $key;
+				if(isset($this->_srvars["HTTP_HOST"]) && $this->_srvars["HTTP_HOST"] == $value){
+					$this->server = $key;
 					break;
 				}
 			}
 		}
-		if(!empty($server)){
-			$server = strtolower($server);
-			$srv_cnf_dir = $dir_cnf.$server."/";
+		if(!empty($this->server)){
+			$this->server = strtolower($this->server);
+			$srv_cnf_dir = $dir_cnf.$this->server."/";
 		}else{
 			$srv_cnf_dir = $dir_cnf;
 		}
@@ -120,7 +120,11 @@ class Hanauta{
 		 * DB接続
 		 *
 		 */
-		if(is_file($srv_cnf_dir.$fw_arr["INI_DB"])) $obj["read_db"]->connect_db($srv_cnf_dir.$fw_arr["INI_DB"]);
+		if(is_file($srv_cnf_dir.$fw_arr["INI_DB"])){
+			$this->obj["read_db"]->connect_db($srv_cnf_dir.$fw_arr["INI_DB"]);
+			$db_arr = parse_ini_file($srv_cnf_dir.$fw_arr["INI_DB"]);
+			$this->db_prefix = $db_arr["DB_PREFIX"];
+		}
 
 		// スクリプトファイルパスを取得
 		$script = NULL;
@@ -132,13 +136,9 @@ class Hanauta{
 		}
 
 		// キャリア設定
-		//$carrier = $obj["mobile"]->get_carrier();
+		$this->carrier = $this->obj["mobile"]->get_carrier();
 
 		// エラーコード設定
-		$dir_fw = constant("DIR_FW");
-		$dir_cnf = constant("DIR_CNF");
-		$ini_fw = constant("INI_FW");
-		$fw_arr = parse_ini_file($ini_fw);
 		// プロジェクト側にあればそちらを優先
 		if(is_file($dir_cnf.$fw_arr["INI_ERROR"])) $this->read_ini($dir_cnf.$fw_arr["INI_ERROR"]);
 		else $this->read_ini($dir_fw."conf/error.ini");

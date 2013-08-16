@@ -25,7 +25,8 @@ class mobile{
 	 */
 	function __construct(){
 		$this->Lib3gk = new Lib3gk();
-		//$this->Lib3gk->initialize();
+		$this->Lib3gk->initialize();
+		$this->Lib3gk->__load_tools();
 	}
 
 	/**
@@ -44,6 +45,21 @@ class mobile{
 			$str = "pc";
 		}
 
+		$rtn = $str;
+		return $rtn;
+	}
+
+	/**
+	 * UID取得
+	 *
+	 * @access public
+	 * @return string	UID
+	 */
+	function get_uid(){
+		$rtn = NULL;
+
+		$str = $this->Lib3gk->get_uid();
+		// $this->get_sub()."@";
 		$rtn = $str;
 		return $rtn;
 	}
