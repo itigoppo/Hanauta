@@ -86,24 +86,10 @@ define("DIR_SMARTY_CACHE",constant("DIR_PRJ")."tmp/cache");
 $ini_sys = constant("INI_SYS");
 $sys_arr = parse_ini_file($ini_sys);
 
-// サイトタイトル
-define("SITE_TITLE", $sys_arr["SITE_TITLE"]);
-
-// サイトRL
-define("SITE_URL", $sys_arr["SITE_URL"]);
-
-// 文字コード - 変えるんなら全ファイルの文字コードを変えること！
-define("SITE_CHARSET", $sys_arr["SITE_CHARSET"]);
 
 // ヘッダー出力用 - 弄らなくても大丈夫
 define("CONTENT_TYPE_HTML","Content-Type: text/html; charset=".constant("SITE_CHARSET"));
 define("CONTENT_TYPE_XML","Content-Type: application/xml; charset=".constant("SITE_CHARSET"));
 
-// $_SERVER が拾えないサーバーの場合は以下のような設定を入れてください。
-// $_SERVER["SCRIPT_NAME"] = "/board/index.php";
-
-// タイムゾーン - 変えるんならsys.iniの方を触ること！
-define('TIME_ZONE', $sys_arr["TIME_ZONE"] * 3600);
-ini_set("date.timezone", $sys_arr["TIME_ZONE_STR"]);
 
 ?>
