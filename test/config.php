@@ -80,17 +80,4 @@ define("DIR_SMARTY_COMPILE",constant("DIR_PRJ")."tmp/templates_c");
 define("DIR_SMARTY_CACHE",constant("DIR_PRJ")."tmp/cache");
 */
 
-/**
- *	えとせとら
- */
-// システム設定ファイル
-$ini_sys = constant("INI_SYS");
-$sys_arr = parse_ini_file($ini_sys);
-
-
-// ヘッダー出力用 - 弄らなくても大丈夫
-define("CONTENT_TYPE_HTML","Content-Type: text/html; charset=".constant("SITE_CHARSET"));
-define("CONTENT_TYPE_XML","Content-Type: application/xml; charset=".constant("SITE_CHARSET"));
-
-
 ?>

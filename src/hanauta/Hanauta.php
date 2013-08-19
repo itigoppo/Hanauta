@@ -18,6 +18,7 @@
  */
 
 class Hanauta{
+	var $version;
 	var $obj;
 	var $obj_ext;
 	var $site_info;
@@ -29,6 +30,7 @@ class Hanauta{
 	var $_pvars;
 	var $_fvars;
 	var $carrier;
+	var $script;
 
 	/**
 	 * コンストラクタ
@@ -138,15 +140,6 @@ class Hanauta{
 		// キャリア設定
 		$this->carrier = $this->obj["mobile"]->get_carrier();
 
-		// スクリプトファイルパスを取得
-		$script = NULL;
-		if(isset($_SERVER["SCRIPT_NAME"])) $script = preg_replace("/\.php.*/",".php",$_SERVER["SCRIPT_NAME"]);
-		$script = preg_replace('/\/{2,}/','/',$script);
-		if($script){
-			define("SCRIPT_NAME",$script);
-			define("SCRIPT_DIR",dirname($script));
-		}
-
 		// エラーコード設定
 		// プロジェクト側にあればそちらを優先
 		if(is_file($dir_cnf.$fw_arr["INI_ERROR"])) $error_ini = $dir_cnf.$fw_arr["INI_ERROR"];
@@ -155,10 +148,12 @@ class Hanauta{
 		$this->error = $error_arr;
 
 		// フレームワークバージョン設定
-		$this->read_ini("version",$dir_fw."conf/version.ini");
+		$ver_fw_arr = parse_ini_file($dir_fw."conf/version.ini");
 
 		// スクリプトバージョン設定
-		if(is_file($dir_cnf."version.ini")) $this->read_ini("version",$dir_cnf."version.ini");
+		$ver_sys_arr = array();
+		if(is_file($dir_cnf."version.ini")) $ver_sys_arr = parse_ini_file($dir_cnf."version.ini");
+		$this->version = array_merge($ver_fw_arr,$ver_sys_arr);
 
 		// タイムゾーン設定
 		if(isset($sys_arr["TIME_ZONE_STR"])) ini_set("date.timezone",$sys_arr["TIME_ZONE_STR"]);
@@ -166,7 +161,15 @@ class Hanauta{
 		// ヘッダー出力用変数
 		define("CONTENT_TYPE_HTML","Content-Type: text/html; charset=".$this->site_info["charset"]);
 		define("CONTENT_TYPE_XML","Content-Type: application/xml; charset=".$this->site_info["charset"]);
-
+	
+		// アクセス中のスクリプトファイルパスを取得
+		$script = NULL;
+		if(isset($this->_srvars["SCRIPT_NAME"])) $script = preg_replace("/\.php.*/",".php",$this->_srvars["SCRIPT_NAME"]);
+		$script = preg_replace('/\/{2,}/','/',$script);
+		if($script){
+			$this->script["name"] = $script;
+			$this->script["dir"] = dirname($script);
+		}
 	}
 
 	/**
@@ -175,15 +178,10 @@ class Hanauta{
 	 * @access public
 	 * @param string	$file	iniファイル名
 	 */
-	function read_ini($key,$file){
+	function read_ini($file){
 		$ini = parse_ini_file($file);
-		$this->$key = $ini;
 		foreach($ini as $i_key => $i_val){
-			//$this->$key = $i_val;
-			//$this->[$i_key] = $i_val;
-
-
-			//define($key,$value);
+			define($key,$value);
 		}
 	}
 }

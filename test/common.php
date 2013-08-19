@@ -50,18 +50,6 @@ elseif(isset($Hanauta->_pvars["page"])) $page = $Hanauta->_pvars["page"];
 if(!isset($page)) $page = 1;
 
 // 共通変数
-$site_title = constant("SITE_TITLE");
-$site_url = constant("SITE_URL");
-$script_file = constant("SCRIPT_NAME");
-$fw_name = constant("FW_NAME");
-$fw_ver = constant("FW_VER");
-$fw_url = constant("FW_URL");
-$script_name = constant("SCR_NAME");
-$script_ver = constant("SCR_VER");
-$script_url = constant("SCR_URL");
-$script_name_org = constant("SCR_NAME_ORG");
-$script_ver_org = constant("SCR_VER_ORG");
-$script_url_org = constant("SCR_URL_ORG");
 $sid = htmlspecialchars(SID);
 $sid = session_name()."=".session_id();
 
