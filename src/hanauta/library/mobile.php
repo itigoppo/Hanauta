@@ -4,7 +4,7 @@
  *
  * @author	HisatoS.
  * @package Hanauta
- * @version 08/11/26 last update
+ * @version 13/08/10 last update
  * @copyright http://www.nono150.com/
  */
 

@@ -20,15 +20,15 @@
 class Hanauta{
 	var $obj;
 	var $obj_ext;
+	var $site_info;
+	var $error;
 	var $_srvars;
 	var $_svars;
 	var $_gvars;
 	var $_cvars;
 	var $_pvars;
 	var $_fvars;
-	var $server;
 	var $carrier;
-	var $db_prefix;
 
 	/**
 	 * コンストラクタ
@@ -87,44 +87,56 @@ class Hanauta{
 		// FILES変数
 		$this->_fvars = $this->obj["request"]->file2vars();
 
+		// プロジェクト用変数設定
+		$this->site_info = array(
+								// サイトタイトル
+								"title" => $sys_arr["SITE_TITLE"],
+								// サイトURL
+								"url" => $sys_arr["SITE_URL"],
+								// 文字コード
+								"charset" => $sys_arr["SITE_CHARSET"],
+								// タイムゾーン
+								"time_zone" => $sys_arr["TIME_ZONE"] * 3600
+							);
+
 		// サーバー種類設定
-		$this->server = "";
+		$this->site_info["server"] = "";
 		if(is_file($dir_cnf.$fw_arr["INI_SERVER"])){
 			$server_arr = parse_ini_file($dir_cnf.$fw_arr["INI_SERVER"]);
 			if(is_array($server_arr)){
 				foreach($server_arr as $key => $value){
 					if(isset($this->_srvars["HTTP_HOST"]) && $this->_srvars["HTTP_HOST"] == $value){
-						$this->server = $key;
+						$this->site_info["server"] = $key;
 						break;
 					}
 				}
 			}
 		}
-		if(empty($this->server)){
+		if(empty($this->site_info["server"])){
 			$server_arr = parse_ini_file($dir_fw."conf/server.ini");
 			foreach($server_arr as $key => $value){
 				if(isset($this->_srvars["HTTP_HOST"]) && $this->_srvars["HTTP_HOST"] == $value){
-					$this->server = $key;
+					$this->site_info["server"] = $key;
 					break;
 				}
 			}
 		}
-		if(!empty($this->server)){
-			$this->server = strtolower($this->server);
-			$srv_cnf_dir = $dir_cnf.$this->server."/";
+		if(!empty($this->site_info["server"])){
+			$this->site_info["server"] = strtolower($this->site_info["server"]);
+			$srv_cnf_dir = $dir_cnf.$this->site_info["server"]."/";
 		}else{
 			$srv_cnf_dir = $dir_cnf;
 		}
 
-		/**
-		 * DB接続
-		 *
-		 */
+		// DB接続
 		if(is_file($srv_cnf_dir.$fw_arr["INI_DB"])){
 			$this->obj["read_db"]->connect_db($srv_cnf_dir.$fw_arr["INI_DB"]);
 			$db_arr = parse_ini_file($srv_cnf_dir.$fw_arr["INI_DB"]);
-			$this->db_prefix = $db_arr["DB_PREFIX"];
+			$this->site_info["db_prefix"] = $db_arr["DB_PREFIX"];
 		}
+
+		// キャリア設定
+		$this->carrier = $this->obj["mobile"]->get_carrier();
 
 		// スクリプトファイルパスを取得
 		$script = NULL;
@@ -135,19 +147,26 @@ class Hanauta{
 			define("SCRIPT_DIR",dirname($script));
 		}
 
-		// キャリア設定
-		$this->carrier = $this->obj["mobile"]->get_carrier();
-
 		// エラーコード設定
 		// プロジェクト側にあればそちらを優先
-		if(is_file($dir_cnf.$fw_arr["INI_ERROR"])) $this->read_ini($dir_cnf.$fw_arr["INI_ERROR"]);
-		else $this->read_ini($dir_fw."conf/error.ini");
+		if(is_file($dir_cnf.$fw_arr["INI_ERROR"])) $error_ini = $dir_cnf.$fw_arr["INI_ERROR"];
+		else $error_ini = $dir_fw."conf/error.ini";
+		$error_arr = parse_ini_file($error_ini);
+		$this->error = $error_arr;
 
 		// フレームワークバージョン設定
-		$this->read_ini($dir_fw."conf/version.ini");
+		$this->read_ini("version",$dir_fw."conf/version.ini");
 
 		// スクリプトバージョン設定
-		if(is_file($dir_cnf."version.ini")) $this->read_ini($dir_cnf."version.ini");
+		if(is_file($dir_cnf."version.ini")) $this->read_ini("version",$dir_cnf."version.ini");
+
+		// タイムゾーン設定
+		if(isset($sys_arr["TIME_ZONE_STR"])) ini_set("date.timezone",$sys_arr["TIME_ZONE_STR"]);
+
+		// ヘッダー出力用変数
+		define("CONTENT_TYPE_HTML","Content-Type: text/html; charset=".$this->site_info["charset"]);
+		define("CONTENT_TYPE_XML","Content-Type: application/xml; charset=".$this->site_info["charset"]);
+
 	}
 
 	/**
@@ -156,10 +175,15 @@ class Hanauta{
 	 * @access public
 	 * @param string	$file	iniファイル名
 	 */
-	function read_ini($file){
+	function read_ini($key,$file){
 		$ini = parse_ini_file($file);
-		foreach($ini as $key => $value){
-			define($key,$value);
+		$this->$key = $ini;
+		foreach($ini as $i_key => $i_val){
+			//$this->$key = $i_val;
+			//$this->[$i_key] = $i_val;
+
+
+			//define($key,$value);
 		}
 	}
 }
