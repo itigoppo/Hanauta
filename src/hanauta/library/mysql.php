@@ -4,7 +4,7 @@
  *
  * @author	HisatoS.
  * @package Hanauta
- * @version 07/06/25 last update
+ * @version 13/08/20 last update
  * @copyright http://www.nono150.com/
  */
 
@@ -17,10 +17,6 @@
  */
 
 class read_db{
-	var $server;
-	var $user;
-	var $pass;
-	var $db_name;
 
 	/**
 	 * コンストラクタ
@@ -72,7 +68,7 @@ class read_db{
 	 * @param int		$debug_flg	デバッグ表示フラグ(0:未使用、1:表示
 	 * @return string	SQLの結果
 	 */
-	function send_query($sql,$mode=0,$debug_flg=0){
+	function send_query($sql,$mode=0,$debug_flg=false){
 		$connect = constant("CONNECT");
 		if($debug_flg) print "<pre>".$sql."</pre>\n";
 		$rtn = @mysql_query($sql,$connect);
@@ -144,12 +140,11 @@ class read_db{
 	 * @param int		$debug_flg	デバッグ表示フラグ
 	 * @return string	結果
 	 */
-	function select_db($table,$field,$where,$param=NULL,$debug_flg=0){
+	function select_db($table,$field,$where,$param=NULL,$debug_flg=false){
 		$sql = NULL;
 		$field = ($field != NULL) ? $field : "*";
 		if($where != NULL) $where = " where ".$where;
 		$sql = "select ".$field." from ".$table.$where;
-		print $sql;
 		if(isset($param) && is_array($param)){
 			if(isset($param["groupby"])) $sql .=" group by ".$param["groupby"];
 			if(isset($param["having"])) $sql .=" having ".$param["having"];

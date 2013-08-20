@@ -130,13 +130,6 @@ class Hanauta{
 			$srv_cnf_dir = $dir_cnf;
 		}
 
-		// DB接続
-		if(is_file($srv_cnf_dir.$fw_arr["INI_DB"])){
-			$this->obj["read_db"]->connect_db($srv_cnf_dir.$fw_arr["INI_DB"]);
-			$db_arr = parse_ini_file($srv_cnf_dir.$fw_arr["INI_DB"]);
-			$this->site_info["db_prefix"] = $db_arr["DB_PREFIX"];
-		}
-
 		// キャリア設定
 		$this->carrier = $this->obj["mobile"]->get_carrier();
 
@@ -161,7 +154,7 @@ class Hanauta{
 		// ヘッダー出力用変数
 		define("CONTENT_TYPE_HTML","Content-Type: text/html; charset=".$this->site_info["charset"]);
 		define("CONTENT_TYPE_XML","Content-Type: application/xml; charset=".$this->site_info["charset"]);
-	
+
 		// アクセス中のスクリプトファイルパスを取得
 		$script = NULL;
 		if(isset($this->_srvars["SCRIPT_NAME"])) $script = preg_replace("/\.php.*/",".php",$this->_srvars["SCRIPT_NAME"]);
@@ -169,6 +162,18 @@ class Hanauta{
 		if($script){
 			$this->script["name"] = $script;
 			$this->script["dir"] = dirname($script);
+		}
+
+		// DB接続
+		if(is_file($srv_cnf_dir.$fw_arr["INI_DB"])){
+			$connect = $this->obj["read_db"]->connect_db($srv_cnf_dir.$fw_arr["INI_DB"]);
+			if(!$connect){
+				header(constant("CONTENT_TYPE_HTML"));
+				print $this->error["W0002"];
+				exit;
+			}
+			$db_arr = parse_ini_file($srv_cnf_dir.$fw_arr["INI_DB"]);
+			$this->site_info["db_prefix"] = $db_arr["DB_PREFIX"];
 		}
 	}
 
