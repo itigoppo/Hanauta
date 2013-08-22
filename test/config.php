@@ -51,6 +51,9 @@ define("DIR_CNF",constant("DIR_PRJ")."conf/");
 // プロジェクト設定ファイル
 define("INI_SYS", constant("DIR_CNF")."sys.ini");
 
+// 各API系設定ファイルディレクトリ
+define("DIR_API",constant("DIR_CNF")."api/");
+
 // エラーログ格納ディレクトリ
 define("D_DIR_ERRLOG", constant("DIR_PRJ")."tmp/error/");
 

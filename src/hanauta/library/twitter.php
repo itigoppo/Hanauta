@@ -22,12 +22,21 @@ require_once("HTTP/OAuth/Consumer.php");
 require_once("Jsphon/Decoder.php");
 
 class twitter{
+	var $consumer_key;
+	var $consumer_secret;
+	var $callback_url;
 
 	/**
 	 * コンストラクタ
 	 */
 	function __construct(){
 		$this->Jsphon = new Jsphon_Decoder();
+		$dir_cnf = constant("DIR_API");
+		$cnf_arr = parse_ini_file($dir_cnf."twitter.ini");
+
+		$this->consumer_key = $cnf_arr["TW_CONSUMER_KEY"];
+		$this->consumer_secret = $cnf_arr["TW_CONSUMER_SECRET"];
+		$this->callback_url = $cnf_arr["TW_CALLBAK"];
 	}
 
 	/**
@@ -58,19 +67,13 @@ class twitter{
 	 * @param array		$token		token方法
 	 * @return mix		url or object
 	 */
-	function twitter_auth($sys_arr,$token){
-		$request = new request();
-		$_svars = $request->ses2vars();
-		$_gvars = $request->get2vars();
-
-		$consumer_key = $sys_arr["TW_CONSUMER_KEY"];
-		$consumer_secret = $sys_arr["TW_CONSUMER_SECRET"];
-		$callback_url = $sys_arr["TW_CALLBAK"];
+	function twitter_auth($token){
+		global $Hanauta;
 
 		$rtn = NULL;
 		$data = array();
 
-		$consumer = new HTTP_OAuth_Consumer($consumer_key,$consumer_secret);
+		$consumer = new HTTP_OAuth_Consumer($this->consumer_key,$this->consumer_secret);
 		// SSL通信対応
 		$http_request = new HTTP_Request2();
 		$http_request->setConfig("ssl_verify_peer", false);
@@ -85,22 +88,22 @@ class twitter{
 			$rtn = $consumer;
 		}else{
 			// 未認証
-			if(isset($_svars["token"]["flg"]) && $_svars["token"]["flg"] == "start" && isset($_gvars["oauth_token"])){
+			if(isset($Hanauta->_svars["token"]["flg"]) && $Hanauta->_svars["token"]["flg"] == "start" && isset($Hanauta->_gvars["oauth_token"])){
 				// callback
-				$verifier = $_gvars["oauth_verifier"];
-				$consumer->setToken($_svars["token"]['request_token']);
-				$consumer->setTokenSecret($_svars["token"]['request_token_secret']);
+				$verifier = $Hanauta->_gvars["oauth_verifier"];
+				$consumer->setToken($Hanauta->_svars["token"]['request_token']);
+				$consumer->setTokenSecret($Hanauta->_svars["token"]['request_token_secret']);
 				$consumer->getAccessToken($this->om_access_token,$verifier);
 				$data["flg"] = "callback";
 				$data["access_token"] = $consumer->getToken();
 				$data["access_token_secret"] = $consumer->getTokenSecret();
 				$request->vars2ses("token",$data);
 				$rtn = "callback";
-				header("Location: ".$sys_arr["TW_CALLBAK"]);
+				header("Location: ".$this->callback_url);
 				exit;
 			}else{
 				// 認証用URL作成
-				$consumer->getRequestToken($this->om_request_token,$callback_url);
+				$consumer->getRequestToken($this->om_request_token,$this->callback_url);
 				$data["flg"] = "start";
 				$data["request_token"] = $consumer->getToken();
 				$data["request_token_secret"] = $consumer->getTokenSecret();

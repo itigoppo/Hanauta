@@ -28,7 +28,9 @@ class test{
 		// DBからトークン取得
 		$token = false;
 		if(isset($Hanauta->site_info["db_prefix"])){
+			$save_flg = true;
 
+			// 仮データ
 			$Hanauta->_pvars["submit"] = "1";
 			$Hanauta->_pvars["login_id"] = "api";
 			$Hanauta->_pvars["login_pass"] = "1333";
@@ -53,6 +55,29 @@ class test{
 			}
 		}
 		$consumer = $Hanauta->obj["twitter"]->twitter_auth($token);
+
+		if($token["auth_flg"]){
+			// 認証済み
+			$rtn_arr = array(
+					"type"		=> "obj",
+					"consumer"	=> $consumer,
+					"regist"	=> false
+			);
+			if($save_flg && isset($auth_data["user"]["token"]) && isset($auth_data["user"]["token_secret"])) $rtn_arr["user"] = $auth_data["user"];
+		}else{
+			// 登録用URL返却
+			$rtn_arr = array(
+							"type"		=> "url",
+							"consumer"	=> $consumer,
+							"regist"	=> false
+						);
+		}
+
+		$rtn = $rtn_arr;
+		return $rtn;
+
+
+
 		$Hanauta->obj["ponpon"]->pr($consumer);
 
 
