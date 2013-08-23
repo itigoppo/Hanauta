@@ -25,6 +25,174 @@ class twitter{
 	var $consumer_key;
 	var $consumer_secret;
 	var $callback_url;
+	var $regist_word;
+	var $regist_ng;
+
+	/**
+	 * Timeline
+	 */
+	var $tm_mentions = "https://api.twitter.com/1.1/statuses/mentions_timeline.json";
+	var $tm_user = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+	var $tm_home = "https://api.twitter.com/1.1/statuses/home_timeline.json";
+	var $tm_rt_of = "https://api.twitter.com/1.1/statuses/retweets_of_me.json";
+
+	/**
+	 * Tweets
+	 */
+	var $sm_rt = "https://api.twitter.com/1.1/statuses/retweets/%s.json";
+	var $sm_show = "https://api.twitter.com/1.1/statuses/show.json";
+	var $sm_destroy = "https://api.twitter.com/1.1/statuses/destroy/%s.json";
+	var $sm_update = "https://api.twitter.com/1.1/statuses/update.json";
+	var $sm_update_with_media = "https://api.twitter.com/1.1/statuses/update_with_media.json";
+	var $sm_oembed = "https://api.twitter.com/1.1/statuses/oembed.json";
+	var $sm_rt_id = "https://api.twitter.com/1.1/statuses/retweeters/ids.json";
+
+	/**
+	 * Search
+	 */
+	var $sh_search = "https://api.twitter.com/1.1/search/tweets.json";
+
+	/**
+	 * Streaming
+	 */
+	var $st_filter = "https://stream.twitter.com/1.1/statuses/filter.json";
+	var $st_sample = "https://stream.twitter.com/1.1/statuses/sample.json";
+	var $st_firehose = "https://stream.twitter.com/1.1/statuses/firehose.json";
+	var $st_user = "https://userstream.twitter.com/1.1/user.json";
+	var $st_site = "https://dev.twitter.com/docs/api/1.1/get/site";
+
+	/**
+	 * Direct Message
+	 */
+	var $dm_get = "https://api.twitter.com/1.1/direct_messages.json";
+	var $dm_sent = "https://api.twitter.com/1.1/direct_messages/sent.json";
+	var $dm_show = "https://api.twitter.com/1.1/direct_messages/show.json";
+	var $dm_destroy = "https://api.twitter.com/1.1/direct_messages/destroy.json";
+	var $dm_new = "https://api.twitter.com/1.1/direct_messages/new.json";
+
+	/**
+	 * Friends & Followers
+	 */
+	var $fm_no_rt = "https://api.twitter.com/1.1/friendships/no_retweets/ids.json";
+	var $fm_friend_id = "https://api.twitter.com/1.1/friends/ids.json";
+	var $fm_followers_id = "https://api.twitter.com/1.1/followers/ids.json";
+	var $fm_lookup = "http://api.twitter.com/1.1/friendships/lookup.json";
+	var $fm_incoming = "https://api.twitter.com/1.1/friendships/incoming.json";
+	var $fm_outgoing = "http://api.twitter.com/1.1/friendships/outgoing.json";
+	var $fm_create = "https://api.twitter.com/1.1/friendships/create.json";
+	var $fm_destroy = "https://api.twitter.com/1.1/friendships/destroy.json";
+	var $fm_update = "http://api.twitter.com/1.1/friendships/update.json";
+	var $fm_show = "http://api.twitter.com/1.1/friendships/show.json";
+	var $fm_friend = "https://api.twitter.com/1.1/friends/list.json";
+	var $fm_followers = "https://api.twitter.com/1.1/followers/list.json";
+
+	/**
+	 * Users
+	 */
+	var $um_setting = "https://api.twitter.com/1.1/account/settings.json";
+	var $um_verify = "https://api.twitter.com/1.1/account/verify_credentials.json";
+	var $um_device = "https://api.twitter.com/1.1/account/update_delivery_device.json";
+	var $um_profile = "https://api.twitter.com/1.1/account/update_profile.json";
+	var $um_bg_image = "https://api.twitter.com/1.1/account/update_profile_background_image.json";
+	var $um_colors = "https://api.twitter.com/1.1/account/update_profile_colors.json";
+	var $um_image = "https://api.twitter.com/1.1/account/update_profile_image.json";
+	var $um_blocks = "https://api.twitter.com/1.1/blocks/list.json";
+	var $um_blocks_id = "https://api.twitter.com/1.1/blocks/ids.json";
+	var $um_blocks_create = "https://api.twitter.com/1.1/blocks/create.json";
+	var $um_blocks_destroy = "https://api.twitter.com/1.1/blocks/destroy.json";
+	var $um_lookup = "https://api.twitter.com/1.1/users/lookup.json";
+	var $um_show = "http://api.twitter.com/1.1/users/show.json";
+	var $um_search = "https://api.twitter.com/1.1/users/search.json";
+	var $um_contributees = "https://api.twitter.com/1.1/users/contributees.json";
+	var $um_contributors = "https://api.twitter.com/1.1/users/contributors.json";
+	var $um_remove_banner = "https://api.twitter.com/1.1/account/remove_profile_banner.json";
+	var $um_update_banner = "https://api.twitter.com/1.1/account/update_profile_banner.json";
+	var $um_banner = "https://api.twitter.com/1.1/users/profile_banner.json";
+
+	/**
+	 * Suggested Users
+	 */
+	var $su_user = "https://api.twitter.com/1.1/users/suggestions/%s.json";
+	var $su_category = "https://api.twitter.com/1.1/users/suggestions.json";
+	var $su_tweets = "https://api.twitter.com/1.1/users/suggestions/%s/members.json";
+
+	/**
+	 * Favorites
+	 */
+	var $fv_list = "https://api.twitter.com/1.1/favorites/list.json";
+	var $fv_destroy = "https://api.twitter.com/1.1/favorites/destroy.json";
+	var $fv_create = "https://api.twitter.com/1.1/favorites/create.json";
+
+	/**
+	 * Lists
+	 */
+	var $lm_list = "http://api.twitter.com/1.1/lists/list.json";
+	var $lm_statuses = "https://api.twitter.com/1.1/lists/statuses.json";
+	var $lm_members_destroy = "https://api.twitter.com/1.1/lists/members/destroy.json";
+	var $lm_memberships = "https://api.twitter.com/1.1/lists/memberships.json";
+	var $lm_subscribers = "https://api.twitter.com/1.1/lists/subscribers.json";
+	var $lm_subscribers_create = "https://api.twitter.com/1.1/lists/subscribers/create.json";
+	var $lm_subscribers_show = "https://api.twitter.com/1.1/lists/subscribers/show.json";
+	var $lm_subscribers_destroy = "https://api.twitter.com/1.1/lists/subscribers/destroy.json";
+	var $lm_create_all = "https://api.twitter.com/1.1/lists/members/create_all.json";
+	var $lm_members_show = "https://api.twitter.com/1.1/lists/members/show.json";
+	var $lm_members = "https://api.twitter.com/1.1/lists/members.json";
+	var $lm_members_create = "https://api.twitter.com/1.1/lists/members/create.json";
+	var $lm_destroy = "https://api.twitter.com/1.1/lists/destroy.json";
+	var $lm_update = "https://api.twitter.com/1.1/lists/update.json";
+	var $lm_create = "https://api.twitter.com/1.1/lists/create.json";
+	var $lm_show = "https://api.twitter.com/1.1/lists/show.json";
+	var $lm_subscriptions = "https://api.twitter.com/1.1/lists/subscriptions.json";
+	var $lm_destroy_all = "https://api.twitter.com/1.1/lists/members/destroy_all.json";
+	var $lm_ownerships = "https://api.twitter.com/1.1/lists/ownerships.json";
+
+	/**
+	 * Saved Searches
+	 */
+	var $sh_saved_list = "https://api.twitter.com/1.1/saved_searches/list.json";
+	var $sh_saved_show = "https://api.twitter.com/1.1/saved_searches/show/%s.json";
+	var $sh_saved_create = "https://api.twitter.com/1.1/saved_searches/create.json";
+	var $sh_saved_destroy = "https://api.twitter.com/1.1/saved_searches/destroy/%s.json";
+
+	/**
+	 * Places & Geo
+	 */
+	var $gm_id = "https://api.twitter.com/1.1/geo/id/%s.json";
+	var $gm_geocode = "https://api.twitter.com/1.1/geo/reverse_geocode.json";
+	var $gm_search = "https://api.twitter.com/1.1/geo/search.json";
+	var $gm_similar = "https://api.twitter.com/1.1/geo/similar_places.json";
+	var $place = "https://api.twitter.com/1.1/geo/place.json";
+
+	/**
+	 * Trends
+	 */
+	var $tr_place = "https://api.twitter.com/1.1/trends/place.json";
+	var $tr_available = "https://api.twitter.com/1.1/trends/available.json";
+	var $tr_closest = "https://api.twitter.com/1.1/trends/closest.json";
+
+	/**
+	 * Spam Reporting
+	 */
+	var $sr_spam = "https://api.twitter.com/1.1/users/report_spam.json";
+
+	/**
+	 * OAuth Methods
+	 */
+	var $om_authenticate = "https://api.twitter.com/oauth/authenticate";
+	var $om_authorize = "https://api.twitter.com/oauth/authorize";
+	var $om_access_token = "https://api.twitter.com/oauth/access_token";
+	var $om_request_token = "https://api.twitter.com/oauth/request_token";
+	var $om_token = "https://api.twitter.com/oauth2/token";
+	var $om_invalidate_token = "https://api.twitter.com/oauth2/invalidate_token";
+
+	/**
+	 * Help Methods
+	 */
+	var $hm_configuration = "https://api.twitter.com/1.1/help/configuration.json";
+	var $hm_languages = "https://api.twitter.com/1.1/help/languages.json";
+	var $hm_privacy = "https://api.twitter.com/1.1/help/privacy.json";
+	var $hm_tos = "https://api.twitter.com/1.1/help/tos.json";
+	var $hm_limit = "https://api.twitter.com/1.1/application/rate_limit_status.json";
 
 	/**
 	 * コンストラクタ
@@ -37,6 +205,8 @@ class twitter{
 		$this->consumer_key = $cnf_arr["TW_CONSUMER_KEY"];
 		$this->consumer_secret = $cnf_arr["TW_CONSUMER_SECRET"];
 		$this->callback_url = $cnf_arr["TW_CALLBAK"];
+		if(isset($cnf_arr["TW_SETTING_WORD"])) $this->regist_word = $cnf_arr["TW_SETTING_WORD"];
+		if(isset($cnf_arr["TW_SETTING_NG"])) $this->regist_ng = $cnf_arr["TW_SETTING_NG"];
 	}
 
 	/**
@@ -60,10 +230,36 @@ class twitter{
 	}
 
 	/**
+	 * statuses mentions access
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	count,since_id,max_id,trim_user,contributor_details,include_entities
+	 * @return mix		false or xml
+	 */
+	function getMentions($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+		if(isset($options["contributor_details"])) $param["contributor_details"] = $options["contributor_details"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->tm_mentions,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+
+
+	/**
 	 * 認証
 	 *
 	 * @access public
-	 * @param array		$sys_arr	システム情報データ
 	 * @param array		$token		token方法
 	 * @return mix		url or object
 	 */
@@ -107,7 +303,7 @@ class twitter{
 				$data["flg"] = "start";
 				$data["request_token"] = $consumer->getToken();
 				$data["request_token_secret"] = $consumer->getTokenSecret();
-				$request->vars2ses("token",$data);
+				$Hanauta->obj["request"]->vars2ses("token",$data);
 				$auth_url = $consumer->getAuthorizeUrl($this->om_authorize);
 				$rtn = $auth_url;
 			}

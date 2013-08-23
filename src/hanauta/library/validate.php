@@ -43,16 +43,14 @@ class validate{
 	 * @return array	チェック結果
 	 */
 	function error_msg($str_arr){
-		$request = new request();
+		global $Hanauta;
 
 		$rtn = NULL;
 		$rtn_arr = array("error"=>false);
-		$_pvars = $request->post2vars();
-		$_gvars = $request->get2vars();
 
 		foreach($str_arr as $key => $val){
-			if(isset($_gvars[$key])) $data = $_gvars[$key];
-			elseif(isset($_pvars[$key])) $data = $_pvars[$key];
+			if(isset($Hanauta->_gvars[$key])) $data = $Hanauta->_gvars[$key];
+			elseif(isset($Hanauta->_pvars[$key])) $data = $Hanauta->_pvars[$key];
 			else $data = NULL;
 			$rtn_arr[$key] = false;
 			foreach($val as $v_key => $v_val){
@@ -67,11 +65,9 @@ class validate{
 					else $rtn_arr[$key] = true;
 				}
 			}
-
 		}
 
 		$rtn = $rtn_arr;
-
 		return $rtn;
 	}
 }

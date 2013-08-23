@@ -30,14 +30,33 @@ else header($heder_html);
 
 // セッション削除
 $Hanauta->obj["request"]->del_ses($Hanauta->_svars,array("auth"));
-if(isset($Hanauta->_gvars["login_id"])) $Hanauta->obj["request"]->del_ses($Hanauta->_svars,array());
+if(isset($Hanauta->_gvars["logout"])) $Hanauta->obj["request"]->del_ses($Hanauta->_svars,array());
 
 
-//$Hanauta->obj["ponpon"]->pr($Hanauta);
 
-$Hanauta->obj_ext["test"]->test();
+// 仮データ
+//$Hanauta->_pvars["submit"] = "1";
+$Hanauta->_pvars["login_id"] = "api";
+$Hanauta->_pvars["login_pass"] = "1333";
+
+//$Hanauta->_pvars["login_id"] = "hanauta";
+//$Hanauta->_pvars["login_pass"] = "1111";
+$Hanauta->_pvars["keyword"] = "@itigoppo ぱんつさんぱんだください。";
+
+// Twitter認証
+$login_data = $Hanauta->obj_ext["login"]->twitter();
+
+if($login_data["type"] == "obj"){
+	// 最終ログイン時間
+	$last_login = $Hanauta->obj_ext["login"]->set_last_login($login_data["user"]["id"]);
+	$Hanauta->obj_ext["test"]->test();
+
+}
 
 
+
+$Hanauta->obj["ponpon"]->pr($Hanauta);
+$Hanauta->obj["ponpon"]->pr($login_data);
 
 /**
  *	テンプレート

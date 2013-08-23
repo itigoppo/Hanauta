@@ -91,15 +91,15 @@ class Hanauta{
 
 		// プロジェクト用変数設定
 		$this->site_info = array(
-								// サイトタイトル
-								"title" => $sys_arr["SITE_TITLE"],
-								// サイトURL
-								"url" => $sys_arr["SITE_URL"],
-								// 文字コード
-								"charset" => $sys_arr["SITE_CHARSET"],
-								// タイムゾーン
-								"time_zone" => $sys_arr["TIME_ZONE"] * 3600
-							);
+							// サイトタイトル
+							"title" => $sys_arr["SITE_TITLE"],
+							// サイトURL
+							"url" => $sys_arr["SITE_URL"],
+							// 文字コード
+							"charset" => $sys_arr["SITE_CHARSET"],
+							// タイムゾーン
+							"time_zone" => $sys_arr["TIME_ZONE"] * 3600
+		);
 
 		// サーバー種類設定
 		$this->site_info["server"] = "";
