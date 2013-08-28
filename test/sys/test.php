@@ -14,9 +14,42 @@ class test{
 
 
 		$last_id=false;
-		$options = array("page"=>1,"include_rts"=>true,"include_entities"=>true);
-		if($last_id && isset($user_options["last_rep"])) $options["since_id"] = $user_options["last_rep"];
-		$tl_data = $Hanauta->obj["twitter"]->getMentions($login_data,$options);
+		// リプライ
+		$options = array("count"=>20,"trim_user"=>false,"contributor_details"=>false,"include_entities"=>false);
+		//if($last_id && isset($user_options["last_rep"])) $options["since_id"] = $user_options["last_rep"];
+		//$tl_data = $Hanauta->obj["twitter"]->getMentions($login_data,$options);
+
+		// ユーザーTL
+		$options = array("count"=>20,"trim_user"=>false,"exclude_replies"=>false,"contributor_details"=>false,"include_rts"=>true);
+		//$tl_data = $Hanauta->obj["twitter"]->getUserTimeline($login_data,$options);
+
+
+		// ホームTL
+		$options = array("count"=>30,"trim_user"=>false,"exclude_replies"=>false,"contributor_details"=>false,"include_rts"=>true);
+		$tl_data = $Hanauta->obj["twitter"]->getHomeTimeline($login_data,$options);
+
+
+		/*
+		 * since_id,max_id,count,trim_user,exclude_replies,contributor_details,include_entities
+		 *
+		 *
+		 * user_id : ユーザーID
+		 * screen_name : スクリーンネーム
+		 *
+		 * since_id : (int) 指定ポストIDより新しいポストを取得
+		 * max_id : (int) 指定ポストIDより古いポストを取得
+		 * count : 取得件数（最大200件）
+		 * trim_user : (bool:false) ユーザー情報をIDだけにするか否か
+		 * exclude_replies : (bool:false) リプライを取得するか否か
+		 * contributor_details : (bool:false) 貢献者情報を表示
+		 * include_entities : (bool:false) エントリー情報を表示
+		 *
+		 * include_rts : (bool:false) RTを取得するか否かを表示
+		 *
+		 * ,since_id,max_id,trim_user,contributor_details,include_entities
+		 *
+		 *
+		 */
 
 
 		$Hanauta->obj["ponpon"]->pr($tl_data);

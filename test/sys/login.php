@@ -129,7 +129,7 @@ class login{
 						"limit"		=> 1
 			);
 		}
-		if($mode) $db_rtn = $Hanauta->obj["read_db"]->select_db($tbl_name,$fld_name,$where,$db_param,true);
+		if($mode) $db_rtn = $Hanauta->obj["read_db"]->select_db($tbl_name,$fld_name,$where,$db_param);
 		else $db_rtn = false;
 
 		// 一致ID検索

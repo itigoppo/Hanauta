@@ -254,6 +254,59 @@ class twitter{
 		return $rtn;
 	}
 
+	/**
+	 * statuses user_timeline access
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,since_id,count,max_id,trim_user,exclude_replies,contributor_details,include_rts
+	 * @return mix		false or xml
+	 */
+	function getUserTimeline($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+		if(isset($options["exclude_replies"])) $param["exclude_replies"] = $options["exclude_replies"];
+		if(isset($options["contributor_details"])) $param["contributor_details"] = $options["contributor_details"];
+		if(isset($options["include_rts"])) $param["include_rts"] = $options["include_rts"];
+
+		$result = $consumer["consumer"]->sendRequest($this->tm_user,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * statuses home_timeline access
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	since_id,max_id,count,trim_user,exclude_replies,contributor_details,include_entities
+	 * @return mix		false or xml
+	 */
+	function getHomeTimeline($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+		if(isset($options["exclude_replies"])) $param["exclude_replies"] = $options["exclude_replies"];
+		if(isset($options["contributor_details"])) $param["contributor_details"] = $options["contributor_details"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->tm_home,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
 
 
 	/**

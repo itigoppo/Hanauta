@@ -35,8 +35,8 @@ if(isset($Hanauta->_gvars["logout"])) $Hanauta->obj["request"]->del_ses($Hanauta
 
 
 // 仮データ
-//$Hanauta->_pvars["submit"] = "1";
-$Hanauta->_pvars["login_id"] = "api";
+$Hanauta->_pvars["submit"] = "1";
+$Hanauta->_pvars["login_id"] = "itigoppo";
 $Hanauta->_pvars["login_pass"] = "1333";
 
 //$Hanauta->_pvars["login_id"] = "hanauta";
@@ -55,8 +55,8 @@ if($login_data["type"] == "obj"){
 
 
 
-$Hanauta->obj["ponpon"]->pr($Hanauta);
-$Hanauta->obj["ponpon"]->pr($login_data);
+//$Hanauta->obj["ponpon"]->pr($Hanauta);
+//$Hanauta->obj["ponpon"]->pr($login_data);
 
 /**
  *	テンプレート
