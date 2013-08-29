@@ -23,26 +23,33 @@ class test{
 		$options = array("count"=>20,"trim_user"=>false,"exclude_replies"=>false,"contributor_details"=>false,"include_rts"=>true);
 		//$tl_data = $Hanauta->obj["twitter"]->getUserTimeline($login_data,$options);
 
-
 		// ホームTL
 		$options = array("count"=>30,"trim_user"=>false,"exclude_replies"=>false,"contributor_details"=>false,"include_rts"=>true);
-		$tl_data = $Hanauta->obj["twitter"]->getHomeTimeline($login_data,$options);
+		//$tl_data = $Hanauta->obj["twitter"]->getHomeTimeline($login_data,$options);
+
+
+		// ホームTL
+		$options = array("count"=>10,"trim_user"=>true,"include_entities"=>true,"include_user_entities"=>true);
+		$tl_data = $Hanauta->obj["twitter"]->getRtof($login_data,$options);
 
 
 		/*
 		 * since_id,max_id,count,trim_user,exclude_replies,contributor_details,include_entities
+		 * count,since_id,max_id,trim_user,include_entities,include_user_entities
 		 *
 		 *
 		 * user_id : ユーザーID
 		 * screen_name : スクリーンネーム
 		 *
+		 * count : 取得件数（最大200件）
 		 * since_id : (int) 指定ポストIDより新しいポストを取得
 		 * max_id : (int) 指定ポストIDより古いポストを取得
-		 * count : 取得件数（最大200件）
 		 * trim_user : (bool:false) ユーザー情報をIDだけにするか否か
+		 * include_entities : (bool:false) エントリー情報を表示
+		 * include_user_entities : (bool:false)
+		 *
 		 * exclude_replies : (bool:false) リプライを取得するか否か
 		 * contributor_details : (bool:false) 貢献者情報を表示
-		 * include_entities : (bool:false) エントリー情報を表示
 		 *
 		 * include_rts : (bool:false) RTを取得するか否かを表示
 		 *

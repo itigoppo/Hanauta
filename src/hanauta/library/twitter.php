@@ -308,6 +308,32 @@ class twitter{
 		return $rtn;
 	}
 
+	/**
+	 * statuses retweeted_of_me access
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	count,since_id,max_id,trim_user,include_entities,include_user_entities
+	 * @return mix		false or xml
+	 */
+	function getRtof($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["include_user_entities"])) $param["include_user_entities"] = $options["include_user_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->tm_rt_of,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+
 
 	/**
 	 * 認証
