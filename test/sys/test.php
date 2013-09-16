@@ -1,7 +1,6 @@
 <?php
 class test{
 
-
 	/**
 	 * コンストラクタ
 	 */
@@ -12,31 +11,51 @@ class test{
 		global $Hanauta;
 		global $login_data;
 
-
-		$last_id=false;
+		$last_id = false;
 		// リプライ
-		$options = array("count"=>20,"trim_user"=>false,"contributor_details"=>false,"include_entities"=>false);
+		$options = array(
+				"count" => 100,
+				"trim_user" => false,
+				"contributor_details" => false,
+				"include_entities" => false
+		);
 		//if($last_id && isset($user_options["last_rep"])) $options["since_id"] = $user_options["last_rep"];
-		//$tl_data = $Hanauta->obj["twitter"]->getMentions($login_data,$options);
+		$tl_data = $Hanauta->obj["twitter"]->getMentions($login_data,$options);
 
 		// ユーザーTL
-		$options = array("count"=>20,"trim_user"=>false,"exclude_replies"=>false,"contributor_details"=>false,"include_rts"=>true);
+		$options = array(
+				"screen_name" => "ie771",
+				"count" => 40,
+				"trim_user" => false,
+				"exclude_replies" => true,
+				"contributor_details" => true,
+				"include_rts" => true
+		);
 		//$tl_data = $Hanauta->obj["twitter"]->getUserTimeline($login_data,$options);
 
 		// ホームTL
-		$options = array("count"=>30,"trim_user"=>false,"exclude_replies"=>false,"contributor_details"=>false,"include_rts"=>true);
+		$options = array(
+				"count" => 100,
+				"trim_user" => false,
+				"exclude_replies" => true,
+				"contributor_details" => true,
+				"include_rts" => true
+		);
 		//$tl_data = $Hanauta->obj["twitter"]->getHomeTimeline($login_data,$options);
 
-
-		// ホームTL
-		$options = array("count"=>10,"trim_user"=>true,"include_entities"=>true,"include_user_entities"=>true);
-		$tl_data = $Hanauta->obj["twitter"]->getRtof($login_data,$options);
-
+		// RTされた
+		$options = array(
+				"count" => 20,
+				"trim_user" => false,
+				"include_entities" => true,
+				"include_user_entities" => false
+		);
+		//$tl_data = $Hanauta->obj["twitter"]->getRtof($login_data,$options);
 
 		/*
 		 * since_id,max_id,count,trim_user,exclude_replies,contributor_details,include_entities
 		 * count,since_id,max_id,trim_user,include_entities,include_user_entities
-		 *
+		 *count,since_id,max_id,trim_user,include_entities,include_user_entities
 		 *
 		 * user_id : ユーザーID
 		 * screen_name : スクリーンネーム
@@ -46,7 +65,7 @@ class test{
 		 * max_id : (int) 指定ポストIDより古いポストを取得
 		 * trim_user : (bool:false) ユーザー情報をIDだけにするか否か
 		 * include_entities : (bool:false) エントリー情報を表示
-		 * include_user_entities : (bool:false)
+		 * include_user_entities : (bool:false) ユーザーbio内URL情報詳細
 		 *
 		 * exclude_replies : (bool:false) リプライを取得するか否か
 		 * contributor_details : (bool:false) 貢献者情報を表示
@@ -58,13 +77,9 @@ class test{
 		 *
 		 */
 
-
 		$Hanauta->obj["ponpon"]->pr($tl_data);
 		//return $rtn;
 	}
-
-
-
 
 	/**
 	 * DB selectテスト
@@ -78,12 +93,11 @@ class test{
 		$db_param = array();
 		$db_rtn = $Hanauta->obj["read_db"]->select_db($tbl_name,$fld_name,$where,$db_param,true);
 
-		for($cnt1=0; $cnt1<$Hanauta->obj["read_db"]->get_result($db_rtn,"rows"); $cnt1++){
+		for($cnt1 = 0;$cnt1 < $Hanauta->obj["read_db"]->get_result($db_rtn,"rows");$cnt1++){
 			$user_data = $Hanauta->obj["string"]->encode_str($Hanauta->obj["read_db"]->get_result($db_rtn,"assoc"));
 			$Hanauta->obj["ponpon"]->pr($user_data);
 		}
 	}
-
 
 	/**
 	 * twitter 登録URL取得
@@ -93,7 +107,11 @@ class test{
 		global $Hanauta;
 
 		$consumer = false;
-		$token = array("auth_flg"=>false,"access_token"=>NULL,"access_token_secret"=>NULL);
+		$token = array(
+				"auth_flg" => false,
+				"access_token" => NULL,
+				"access_token_secret" => NULL
+		);
 
 		$consumer = $Hanauta->obj["twitter"]->twitter_auth($token);
 		return $consumer;

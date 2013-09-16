@@ -36,7 +36,7 @@ if(isset($Hanauta->_gvars["logout"])) $Hanauta->obj["request"]->del_ses($Hanauta
 
 // 仮データ
 $Hanauta->_pvars["submit"] = "1";
-$Hanauta->_pvars["login_id"] = "itigoppo";
+$Hanauta->_pvars["login_id"] = "nono150";
 $Hanauta->_pvars["login_pass"] = "1333";
 
 //$Hanauta->_pvars["login_id"] = "hanauta";

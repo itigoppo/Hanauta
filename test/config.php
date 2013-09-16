@@ -25,7 +25,7 @@ ini_set("session.use_trans_sid",true);
  *	PEARパス設定
  */
 //ini_set("include_path", ".:/home/itigoppo/pear/php");
-//ini_set("include_path", ".:/usr/lib/php");
+ini_set("include_path", ".:/usr/lib/php");
 
 /**
  *	全体設定
