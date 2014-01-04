@@ -39,10 +39,11 @@ class twitter{
 	/**
 	 * Tweets
 	 */
-	var $sm_rt = "https://api.twitter.com/1.1/statuses/retweets/%s.json";
+	var $sm_rts = "https://api.twitter.com/1.1/statuses/retweets/%s.json";
 	var $sm_show = "https://api.twitter.com/1.1/statuses/show.json";
 	var $sm_destroy = "https://api.twitter.com/1.1/statuses/destroy/%s.json";
 	var $sm_update = "https://api.twitter.com/1.1/statuses/update.json";
+	var $sm_rt = "https://api.twitter.com/1.1/statuses/retweet/%s.json";
 	var $sm_update_with_media = "https://api.twitter.com/1.1/statuses/update_with_media.json";
 	var $sm_oembed = "https://api.twitter.com/1.1/statuses/oembed.json";
 	var $sm_rt_id = "https://api.twitter.com/1.1/statuses/retweeters/ids.json";
@@ -230,7 +231,7 @@ class twitter{
 	}
 
 	/**
-	 * statuses mentions access
+	 * GET statuses/mentions_timeline
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
@@ -255,7 +256,7 @@ class twitter{
 	}
 
 	/**
-	 * statuses user_timeline access
+	 * GET statuses/user_timeline
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
@@ -283,7 +284,7 @@ class twitter{
 	}
 
 	/**
-	 * statuses home_timeline access
+	 * GET statuses/home_timeline
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
@@ -309,7 +310,7 @@ class twitter{
 	}
 
 	/**
-	 * statuses retweeted_of_me access
+	 * GET statuses/retweets_of_me
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
@@ -333,7 +334,1545 @@ class twitter{
 		return $rtn;
 	}
 
+	/**
+	 * GET statuses/retweets/:id
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,count,trim_user
+	 * @return mix		false or xml
+	 */
+	function getRetweet($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
 
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+
+		$result = $consumer["consumer"]->sendRequest(sprintf($this->sm_rts, $options["id"]),$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET statuses/show/:id
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,trim_user,include_my_retweet,include_entities
+	 * @return mix		false or xml
+	 */
+	function getStatusShow($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["id"])) $param["id"] = $options["id"];
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+		if(isset($options["include_my_retweet"])) $param["include_my_retweet"] = $options["include_my_retweet"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->sm_show,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST statuses/destroy/:id
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,trim_user
+	 * @return mix		false or xml
+	 */
+	function destroyStatus($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+
+		$result = $consumer["consumer"]->sendRequest(sprintf($this->sm_destroy, $options["id"]),$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST statuses/update
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	status,in_reply_to_status_id,lat,long,place_id,display_coordinates,trim_user
+	 * @return mix		false or xml
+	 */
+	function updateStatus($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["status"])) $param["status"] = $options["status"];
+		if(isset($options["in_reply_to_status_id"])) $param["in_reply_to_status_id"] = $options["in_reply_to_status_id"];
+		if(isset($options["lat"])) $param["lat"] = $options["lat"];
+		if(isset($options["long"])) $param["long"] = $options["long"];
+		if(isset($options["place_id"])) $param["place_id"] = $options["place_id"];
+		if(isset($options["display_coordinates"])) $param["display_coordinates"] = $options["display_coordinates"];
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+
+		$result = $consumer["consumer"]->sendRequest($this->sm_update,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST statuses/retweet/:id
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,trim_user
+	 * @return mix		false or xml
+	 */
+	function retweetStatus($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["trim_user"])) $param["trim_user"] = $options["trim_user"];
+
+		$result = $consumer["consumer"]->sendRequest(sprintf($this->sm_rt, $options["id"]),$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET statuses/retweeters/ids
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,cursor,lstringify_ids
+	 * @return mix		false or xml
+	 */
+	function getRetweetIds($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["id"])) $param["id"] = $options["id"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["stringify_ids"])) $param["stringify_ids"] = $options["stringify_ids"];
+
+		$result = $consumer["consumer"]->sendRequest($this->sm_rt_id,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET search/tweets
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	q,geocode,lang,locale,result_type,count,until,since_id,max_id,include_entities,callback
+	 * @return mix		false or xml
+	 */
+	function getSearch($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["q"])) $param["q"] = $options["q"];
+		if(isset($options["geocode"])) $param["geocode"] = $options["geocode"];
+		if(isset($options["lang"])) $param["lang"] = $options["lang"];
+		if(isset($options["locale"])) $param["locale"] = $options["locale"];
+		if(isset($options["result_type"])) $param["result_type"] = $options["result_type"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["until"])) $param["until"] = $options["until"];
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["callback"])) $param["callback"] = $options["callback"];
+
+		$result = $consumer["consumer"]->sendRequest($this->sh_search,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET direct_messages
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	since_id,max_id,count,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function getDM($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->dm_get,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET direct_messages/sent
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	since_id,max_id,count,page,include_entities
+	 * @return mix		false or xml
+	 */
+	function getSentDM($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["page"])) $param["page"] = $options["page"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->dm_sent,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET direct_messages/show
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id
+	 * @return mix		false or xml
+	 */
+	function getDMShow($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["id"])) $param["id"] = $options["id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->dm_show,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST direct_messages/destroy
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,include_entities
+	 * @return mix		false or xml
+	 */
+	function destroyDM($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["id"])) $param["id"] = $options["id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->dm_destroy,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST direct_messages/new
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,text
+	 * @return mix		false or xml
+	 */
+	function newDM($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["text"])) $param["text"] = $options["text"];
+
+		$result = $consumer["consumer"]->sendRequest($this->dm_new,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET friendships/no_retweets/ids
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	stringify_ids
+	 * @return mix		false or xml
+	 */
+	function getNoRtIds($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["stringify_ids"])) $param["stringify_ids"] = $options["stringify_ids"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_no_rt,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET friends/ids
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,cursor,stringify_ids,count
+	 * @return mix		false or xml
+	 */
+	function getFriendsIds($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["stringify_ids"])) $param["stringify_ids"] = $options["stringify_ids"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_friend_id,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET followers/ids
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,cursor,stringify_ids,count
+	 * @return mix		false or xml
+	 */
+	function getFollowersIds($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["stringify_ids"])) $param["stringify_ids"] = $options["stringify_ids"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_followers_id,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET friendships/lookup
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name
+	 * @return mix		false or xml
+	 */
+	function getFriendsLookup($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_lookup,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET friendships/incoming
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	cursor,stringify_ids
+	 * @return mix		false or xml
+	 */
+	function getIncoming($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["stringify_ids"])) $param["stringify_ids"] = $options["stringify_ids"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_incoming,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET friendships/outgoing
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	cursor,stringify_ids
+	 * @return mix		false or xml
+	 */
+	function getOutgoing($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["stringify_ids"])) $param["stringify_ids"] = $options["stringify_ids"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_outgoing,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST friendships/create
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	screen_name,user_id,follow
+	 * @return mix		false or xml
+	 */
+	function createFriend($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["follow"])) $param["follow"] = $options["follow"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_create,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST friendships/destroy
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	screen_name,user_id
+	 * @return mix		false or xml
+	 */
+	function destroyFriend($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_destroy,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST friendships/update
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	screen_name,user_id,device,retweets
+	 * @return mix		false or xml
+	 */
+	function updateFriend($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["device"])) $param["device"] = $options["device"];
+		if(isset($options["retweets"])) $param["retweets"] = $options["retweets"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_update,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET friendships/show
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	source_id,source_screen_name,target_id,target_screen_name
+	 * @return mix		false or xml
+	 */
+	function getFriendShow($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["source_id"])) $param["source_id"] = $options["source_id"];
+		if(isset($options["source_screen_name"])) $param["source_screen_name"] = $options["source_screen_name"];
+		if(isset($options["target_id"])) $param["target_id"] = $options["target_id"];
+		if(isset($options["target_screen_name"])) $param["target_screen_name"] = $options["target_screen_name"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_show,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET friends/list
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,cursor,skip_status,include_user_entities
+	 * @return mix		false or xml
+	 */
+	function getFriends($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+		if(isset($options["include_user_entities"])) $param["include_user_entities"] = $options["include_user_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_friend,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET followers/list
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,cursor,skip_status,include_user_entities
+	 * @return mix		false or xml
+	 */
+	function getFollowers($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+		if(isset($options["include_user_entities"])) $param["include_user_entities"] = $options["include_user_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fm_followers,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET account/settings
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options
+	 * @return mix		false or xml
+	 */
+	function getSettings($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		$result = $consumer["consumer"]->sendRequest($this->um_setting,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET account/verify_credentials
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function getVerify($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_verify,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST account/settings
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	trend_location_woeid,sleep_time_enabled,start_sleep_time,end_sleep_time,time_zone,lang
+	 * @return mix		false or xml
+	 */
+	function setSettings($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["trend_location_woeid"])) $param["trend_location_woeid"] = $options["trend_location_woeid"];
+		if(isset($options["sleep_time_enabled"])) $param["sleep_time_enabled"] = $options["sleep_time_enabled"];
+		if(isset($options["start_sleep_time"])) $param["start_sleep_time"] = $options["start_sleep_time"];
+		if(isset($options["end_sleep_time"])) $param["end_sleep_time"] = $options["end_sleep_time"];
+		if(isset($options["time_zone"])) $param["time_zone"] = $options["time_zone"];
+		if(isset($options["lang"])) $param["skip_status"] = $options["lang"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_setting,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST account/update_delivery_device
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	device,include_entities
+	 * @return mix		false or xml
+	 */
+	function setDevice($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["device"])) $param["device"] = $options["device"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_device,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST account/update_profile
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	name,url,location,description,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function setProfile($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["name"])) $param["name"] = $options["name"];
+		if(isset($options["url"])) $param["url"] = $options["url"];
+		if(isset($options["location"])) $param["location"] = $options["location"];
+		if(isset($options["description"])) $param["description"] = $options["description"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_profile,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET blocks/list
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	include_entities,skip_status,cursor
+	 * @return mix		false or xml
+	 */
+	function getBlocks($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_blocks,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET blocks/ids
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	stringify_ids,cursor
+	 * @return mix		false or xml
+	 */
+	function getBlocksIds($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["stringify_ids"])) $param["stringify_ids"] = $options["stringify_ids"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_blocks_id,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST blocks/create
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	screen_name,user_id,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function createBlock($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_blocks_create,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST blocks/destroy
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	screen_name,user_id,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function destroyBlock($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_blocks_destroy,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET users/lookup
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	screen_name,user_id,include_entities
+	 * @return mix		false or xml
+	 */
+	function getUsersLookup($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_lookup,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET users/show
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,include_entities
+	 * @return mix		false or xml
+	 */
+	function getUsersShow($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_show,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET users/search
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	q,page,count,include_entities
+	 * @return mix		false or xml
+	 */
+	function getUsersSearch($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["q"])) $param["q"] = $options["q"];
+		if(isset($options["page"])) $param["page"] = $options["page"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_search,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET users/contributees
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function getContributees($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_contributees,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET users/contributors
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function getContributors($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->um_contributors,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET favorites/list
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,count,since_id,max_id,include_entities
+	 * @return mix		false or xml
+	 */
+	function getFavs($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fv_list,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST favorites/destroy
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,include_entities
+	 * @return mix		false or xml
+	 */
+	function destroyFav($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["id"])) $param["id"] = $options["id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fv_destroy,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST favorites/create
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	id,include_entities
+	 * @return mix		false or xml
+	 */
+	function createFav($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["id"])) $param["id"] = $options["id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+
+		$result = $consumer["consumer"]->sendRequest($this->fv_create,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/list
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,reverse
+	 * @return mix		false or xml
+	 */
+	function getLists($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["reverse"])) $param["reverse"] = $options["reverse"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_list,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/statuses
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,owner_screen_name,owner_id,since_id,max_id,count,include_entities,include_rts
+	 * @return mix		false or xml
+	 */
+	function getListTweets($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+		if(isset($options["since_id"])) $param["since_id"] = $options["since_id"];
+		if(isset($options["max_id"])) $param["max_id"] = $options["max_id"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["include_rts"])) $param["include_rts"] = $options["include_rts"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_statuses,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/members/destroy
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @return mix		false or xml
+	 */
+	function destryListMember($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_members_destroy,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/memberships
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	user_id,screen_name,cursor,owner_id,filter_to_owned_lists
+	 * @return mix		false or xml
+	 */
+	function getUserLists($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["filter_to_owned_lists"])) $param["filter_to_owned_lists"] = $options["filter_to_owned_lists"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_memberships,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/subscribers
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,owner_screen_name,owner_id,cursor,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function getSubscribers($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_subscribers,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/subscribers/create
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function createSubscribers($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_subscribers_create,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/subscribers/show
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug,user_id,screen_name,include_entities,skip_status
+	 * @return mix		false or xml
+	 */
+	function getUserSubscribers($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_subscribers_show,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/subscribers/destroy
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,owner_screen_name,owner_id
+	 * @return mix		false or xml
+	 */
+	function destroySubscribers($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_subscribers_destroy,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/members/create_all
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @return mix		false or xml
+	 */
+	function createListAll($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_create_all,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/members/show
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @return mix		false or xml
+	 */
+	function getUserListMember($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_members_show,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/members
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @return mix		false or xml
+	 */
+	function getListMember($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+		if(isset($options["include_entities"])) $param["include_entities"] = $options["include_entities"];
+		if(isset($options["skip_status"])) $param["skip_status"] = $options["skip_status"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_members,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/members/create
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @return mix		false or xml
+	 */
+	function createListMember($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_members_create,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/destroy
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function destroyList($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_destroy,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/update
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function updateList($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["name"])) $param["name"] = $options["name"];
+		if(isset($options["mode"])) $param["mode"] = $options["mode"];
+		if(isset($options["description"])) $param["description"] = $options["description"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_update,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/create
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function createList($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["name"])) $param["name"] = $options["name"];
+		if(isset($options["mode"])) $param["mode"] = $options["mode"];
+		if(isset($options["description"])) $param["description"] = $options["description"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_create,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/update
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function getListShow($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_show,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/subscriptions
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function getSubscriptions($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_subscriptions,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST lists/members/destroy_all
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @return mix		false or xml
+	 */
+	function destroyListAll($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["list_id"])) $param["list_id"] = $options["list_id"];
+		if(isset($options["slug"])) $param["slug"] = $options["slug"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["owner_screen_name"])) $param["owner_screen_name"] = $options["owner_screen_name"];
+		if(isset($options["owner_id"])) $param["owner_id"] = $options["owner_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_destroy_all,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET lists/ownerships
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function getOwnerships($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["count"])) $param["count"] = $options["count"];
+		if(isset($options["cursor"])) $param["cursor"] = $options["cursor"];
+
+		$result = $consumer["consumer"]->sendRequest($this->lm_ownerships,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET saved_searches/list
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options
+	 * @return mix		false or xml
+	 */
+	function getSavedSearch($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		$result = $consumer["consumer"]->sendRequest($this->sh_saved_list,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET saved_searches/show/:id
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options
+	 * @return mix		false or xml
+	 */
+	function getSavedSearchId($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		$result = $consumer["consumer"]->sendRequest(sprintf($this->sh_saved_show, $options["id"]),$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST saved_searches/create
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function createSavedSearch($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["query"])) $param["query"] = $options["query"];
+
+		$result = $consumer["consumer"]->sendRequest($this->sh_saved_create,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST saved_searches/destroy/:id
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options
+	 * @return mix		false or xml
+	 */
+	function destroySavedSearch($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		$result = $consumer["consumer"]->sendRequest(sprintf($this->sh_saved_destroy, $options["id"]),$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET trends/place
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function getTrends($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["id"])) $param["id"] = $options["id"];
+		if(isset($options["exclude"])) $param["exclude"] = $options["exclude"];
+
+		$result = $consumer["consumer"]->sendRequest($this->tr_place,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET trends/available
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function getTrendsAvailable($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		$result = $consumer["consumer"]->sendRequest($this->tr_available,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * GET trends/closest
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function getTrendsClosest($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["lat"])) $param["lat"] = $options["lat"];
+		if(isset($options["long"])) $param["long"] = $options["long"];
+
+		$result = $consumer["consumer"]->sendRequest($this->tr_closest,$param,"GET");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
+
+	/**
+	 * POST users/report_spam
+	 *
+	 * @access public
+	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
+	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @return mix		false or xml
+	 */
+	function reportSpam($consumer,$options=false){
+		if($consumer["type"] != "obj") return false;
+		$rtn = false;
+		$param = array();
+
+		if(isset($options["screen_name"])) $param["screen_name"] = $options["screen_name"];
+		if(isset($options["user_id"])) $param["user_id"] = $options["user_id"];
+
+		$result = $consumer["consumer"]->sendRequest($this->sr_spam,$param,"POST");
+		$rtn = $this->_getBody($result);
+		return $rtn;
+	}
 
 	/**
 	 * 認証
@@ -358,16 +1897,16 @@ class twitter{
 
 		if($token["auth_flg"]){
 			// 認証済み
-			$consumer->setToken($token['access_token']);
-			$consumer->setTokenSecret($token['access_token_secret']);
+			$consumer->setToken($token["access_token"]);
+			$consumer->setTokenSecret($token["access_token_secret"]);
 			$rtn = $consumer;
 		}else{
 			// 未認証
 			if(isset($Hanauta->_svars["token"]["flg"]) && $Hanauta->_svars["token"]["flg"] == "start" && isset($Hanauta->_gvars["oauth_token"])){
 				// callback
 				$verifier = $Hanauta->_gvars["oauth_verifier"];
-				$consumer->setToken($Hanauta->_svars["token"]['request_token']);
-				$consumer->setTokenSecret($Hanauta->_svars["token"]['request_token_secret']);
+				$consumer->setToken($Hanauta->_svars["token"]["request_token"]);
+				$consumer->setTokenSecret($Hanauta->_svars["token"]["request_token_secret"]);
 				$consumer->getAccessToken($this->om_access_token,$verifier);
 				$data["flg"] = "callback";
 				$data["access_token"] = $consumer->getToken();

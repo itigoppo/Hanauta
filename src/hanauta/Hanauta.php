@@ -103,6 +103,8 @@ class Hanauta{
 
 		// サーバー種類設定
 		$this->site_info["server"] = "";
+		print $dir_cnf;
+		print "@";
 		if(is_file($dir_cnf.$fw_arr["INI_SERVER"])){
 			$server_arr = parse_ini_file($dir_cnf.$fw_arr["INI_SERVER"]);
 			if(is_array($server_arr)){
