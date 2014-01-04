@@ -1481,7 +1481,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @param array		$options	list_id,slug,user_id,owner_screen_name,owner_id,include_entities,skip_status
 	 * @return mix		false or xml
 	 */
 	function getUserListMember($consumer,$options=false){
@@ -1508,7 +1508,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	list_id,slug,user_id,screen_name,owner_screen_name,owner_id
+	 * @param array		$options	list_id,slug,owner_screen_name,owner_id,cursor,include_entities,skip_status
 	 * @return mix		false or xml
 	 */
 	function getListMember($consumer,$options=false){
@@ -1582,7 +1582,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	list_id,slug,name,mode,description,owner_screen_name,owner_id
 	 * @return mix		false or xml
 	 */
 	function updateList($consumer,$options=false){
@@ -1608,7 +1608,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	name,mode,description
 	 * @return mix		false or xml
 	 */
 	function createList($consumer,$options=false){
@@ -1630,7 +1630,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	list_id,slug,owner_screen_name,owner_id
 	 * @return mix		false or xml
 	 */
 	function getListShow($consumer,$options=false){
@@ -1653,7 +1653,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	user_id,screen_name,count,cursor
 	 * @return mix		false or xml
 	 */
 	function getSubscriptions($consumer,$options=false){
@@ -1701,7 +1701,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	user_id,screen_name,count,cursor
 	 * @return mix		false or xml
 	 */
 	function getOwnerships($consumer,$options=false){
@@ -1742,7 +1742,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options
+	 * @param array		$options	id
 	 * @return mix		false or xml
 	 */
 	function getSavedSearchId($consumer,$options=false){
@@ -1760,7 +1760,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	query
 	 * @return mix		false or xml
 	 */
 	function createSavedSearch($consumer,$options=false){
@@ -1780,7 +1780,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options
+	 * @param array		$options	id
 	 * @return mix		false or xml
 	 */
 	function destroySavedSearch($consumer,$options=false){
@@ -1798,7 +1798,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	id,exclude
 	 * @return mix		false or xml
 	 */
 	function getTrends($consumer,$options=false){
@@ -1819,7 +1819,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options
 	 * @return mix		false or xml
 	 */
 	function getTrendsAvailable($consumer,$options=false){
@@ -1837,7 +1837,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	lat,long
 	 * @return mix		false or xml
 	 */
 	function getTrendsClosest($consumer,$options=false){
@@ -1858,7 +1858,7 @@ class twitter{
 	 *
 	 * @access public
 	 * @param array		$consumer	オブジェクト等(type,consumer,regist)
-	 * @param array		$options	owner_screen_name,owner_id,list_id,slug
+	 * @param array		$options	screen_name,user_id
 	 * @return mix		false or xml
 	 */
 	function reportSpam($consumer,$options=false){
