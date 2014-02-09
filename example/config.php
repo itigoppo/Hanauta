@@ -4,7 +4,7 @@
  *
  * @author	HisatoS.
  * @package Hanauta
- * @version 13/08/13 last update
+ * @version 14/02/08 last update
  * @copyright http://www.nono150.com/
  */
 
@@ -25,12 +25,15 @@ ini_set("session.use_trans_sid",true);
  *	PEARパス設定
  */
 //ini_set("include_path", ".:/home/itigoppo/pear/php");
+ini_set("include_path", ".:/usr/lib/php");
 
+///
 /**
  *	全体設定
  */
 // ルートパス
-define("DIR_ROOT",$_SERVER["DOCUMENT_ROOT"]."/");
+//define("DIR_ROOT","/home/itigoppo/www/");
+define("DIR_ROOT","/Users/itigoppo/Sites/hanauta/");
 
 // ライブラリディレクトリ
 define("DIR_LIB", constant("DIR_ROOT")."src/");
@@ -50,6 +53,9 @@ define("DIR_CNF",constant("DIR_PRJ")."conf/");
 // プロジェクト設定ファイル
 define("INI_SYS", constant("DIR_CNF")."sys.ini");
 
+// 各API系設定ファイルディレクトリ
+define("DIR_API",constant("DIR_CNF")."api/");
+
 // エラーログ格納ディレクトリ
 define("D_DIR_ERRLOG", constant("DIR_PRJ")."tmp/error/");
 
@@ -65,7 +71,6 @@ define("INI_FW",constant("DIR_CNF")."fw.ini");
 /**
  *	Smarty設定
  */
-/* 使うならコメント解除
 // Smartyディレクトリ
 define("DIR_SMARTY", constant("DIR_LIB")."smarty/");
 
@@ -77,33 +82,5 @@ define("DIR_SMARTY_COMPILE",constant("DIR_PRJ")."tmp/templates_c");
 
 // キャッシュディレクトリ
 define("DIR_SMARTY_CACHE",constant("DIR_PRJ")."tmp/cache");
-*/
-
-/**
- *	えとせとら
- */
-// システム設定ファイル
-$ini_sys = constant("INI_SYS");
-$sys_arr = parse_ini_file($ini_sys);
-
-// サイトタイトル
-define("SITE_TITLE", $sys_arr["SITE_TITLE"]);
-
-// サイトRL
-define("SITE_URL", $sys_arr["SITE_URL"]);
-
-// 文字コード - 変えるんなら全ファイルの文字コードを変えること！
-define("SITE_CHARSET", $sys_arr["SITE_CHARSET"]);
-
-// ヘッダー出力用 - 弄らなくても大丈夫
-define("CONTENT_TYPE_HTML","Content-Type: text/html; charset=".constant("SITE_CHARSET"));
-define("CONTENT_TYPE_XML","Content-Type: application/xml; charset=".constant("SITE_CHARSET"));
-
-// $_SERVER が拾えないサーバーの場合は以下のような設定を入れてください。
-// $_SERVER["SCRIPT_NAME"] = "/board/index.php";
-
-// タイムゾーン - 変えるんならsys.iniの方を触ること！
-define('TIME_ZONE', $sys_arr["TIME_ZONE"] * 3600);
-ini_set("date.timezone", $sys_arr["TIME_ZONE_STR"]);
 
 ?>

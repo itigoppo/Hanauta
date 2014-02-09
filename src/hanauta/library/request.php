@@ -4,7 +4,7 @@
  *
  * @author	HisatoS.
  * @package Hanauta
- * @version 07/06/25 last update
+ * @version 14/02/09 last update
  * @copyright http://www.nono150.com/
  */
 
@@ -21,7 +21,6 @@ class request extends string{
 	 * コンストラクタ
 	 */
 	function __construct(){
-		$this->string();
 	}
 
 	/**
@@ -56,7 +55,7 @@ class request extends string{
 		}else{
 			if(isset($HTTP_GET_VARS)) $rtn = $HTTP_GET_VARS;
 		}
-		$rtn = $this->decode_url($rtn);
+		$rtn = parent::decode_url($rtn);
 
 		return $rtn;
 	}

@@ -102,7 +102,7 @@ class twitter{
 	var $um_blocks_create = "https://api.twitter.com/1.1/blocks/create.json";
 	var $um_blocks_destroy = "https://api.twitter.com/1.1/blocks/destroy.json";
 	var $um_lookup = "https://api.twitter.com/1.1/users/lookup.json";
-	var $um_show = "http://api.twitter.com/1.1/users/show.json";
+	var $um_show = "https://api.twitter.com/1.1/users/show.json";
 	var $um_search = "https://api.twitter.com/1.1/users/search.json";
 	var $um_contributees = "https://api.twitter.com/1.1/users/contributees.json";
 	var $um_contributors = "https://api.twitter.com/1.1/users/contributors.json";
@@ -1891,6 +1891,7 @@ class twitter{
 		// SSL通信対応
 		$http_request = new HTTP_Request2();
 		$http_request->setConfig("ssl_verify_peer", false);
+		$http_request->setConfig("ssl_verify_host", false);
 		$consumer_request = new HTTP_OAuth_Consumer_Request;
 		$consumer_request->accept($http_request);
 		$consumer->accept($consumer_request);
@@ -1911,7 +1912,7 @@ class twitter{
 				$data["flg"] = "callback";
 				$data["access_token"] = $consumer->getToken();
 				$data["access_token_secret"] = $consumer->getTokenSecret();
-				$request->vars2ses("token",$data);
+				$Hanauta->obj["request"]->vars2ses("token",$data);
 				$rtn = "callback";
 				header("Location: ".$this->callback_url);
 				exit;

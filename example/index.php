@@ -4,7 +4,7 @@
  *
  * @author	HisatoS.
  * @package Example
- * @version 13/08/13 last update
+ * @version 14/02/08 last update
  * @copyright http://www.nono150.com/
  */
 
@@ -16,8 +16,11 @@ require_once("./common.php");
 
 /**
  * 変数設定
- */
+*/
+// テンプレートファイル名
+$tmp_file = "index.tpl";
 
+// ページ用各変数初期化
 
 /**
  * 処理開始
@@ -28,23 +31,13 @@ $heder_html = constant("CONTENT_TYPE_HTML");
 if($mode == "rss") header($heder_xml);
 else header($heder_html);
 
-// セッション削除
-$obj["request"]->del_ses($_svars,array("auth"));
-if(isset($_gvars["login_id"])) $obj["request"]->del_ses($_svars,array());
+// 住所分割
+$addr = $Hanauta->obj["address"]->explode_address("東京都港区赤坂9-7-1ミッドタウン・タワー");
 
-
-//$obj_ext["login"]->test();
-
-/**
- *	テンプレート
- */
-// テンプレート用変数設定
-
+// 住所出力
+$Hanauta->obj["ponpon"]->pr($addr);
 
 // 処理時間計測終了
-$obj["benchmark"]->end();
+$Hanauta->obj["benchmark"]->end();
 
-
-print $obj["benchmark"]->score;
-
-?>
+print $Hanauta->obj["benchmark"]->score;

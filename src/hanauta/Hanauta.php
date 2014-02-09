@@ -31,13 +31,14 @@ class Hanauta{
 	var $_fvars;
 	var $carrier;
 	var $script;
+	var $time_info;
 
 	/**
 	 * コンストラクタ
 	 */
 	function __construct($dir_fw){
 
-		// フレームワーク設定ファイル
+		// プロジェクト用フレームワーク設定ファイル
 		$dir_cnf = constant("DIR_CNF");
 		$ini_fw = constant("INI_FW");
 		$fw_arr = parse_ini_file($ini_fw);
@@ -63,7 +64,7 @@ class Hanauta{
 		// プロジェクト用拡張クラス読み込み
 		$this->obj_ext = array();
 		if(isset($sys_arr["INI_EXTEND"]) && $sys_arr["INI_EXTEND"]){
-			$load_arr = parse_ini_file($sys_arr["INI_EXTEND"]);
+			$load_arr = parse_ini_file($dir_cnf.$sys_arr["INI_EXTEND"]);
 			if(is_array($load_arr)){
 				foreach($load_arr as $key => $value){
 					include_once($dir_sys.$value.".php");
@@ -103,13 +104,14 @@ class Hanauta{
 
 		// サーバー種類設定
 		$this->site_info["server"] = "";
-		print $dir_cnf;
-		print "@";
-		if(is_file($dir_cnf.$fw_arr["INI_SERVER"])){
-			$server_arr = parse_ini_file($dir_cnf.$fw_arr["INI_SERVER"]);
+		if(is_file($dir_fw."/conf/".$fw_arr["INI_SERVER"])){
+			$server_arr = parse_ini_file($dir_fw."/conf/".$fw_arr["INI_SERVER"]);
 			if(is_array($server_arr)){
 				foreach($server_arr as $key => $value){
 					if(isset($this->_srvars["HTTP_HOST"]) && $this->_srvars["HTTP_HOST"] == $value){
+						if($key == "LOCALHOST"){
+							"LOCAL";
+						}
 						$this->site_info["server"] = $key;
 						break;
 					}
@@ -117,7 +119,7 @@ class Hanauta{
 			}
 		}
 		if(empty($this->site_info["server"])){
-			$server_arr = parse_ini_file($dir_fw."conf/server.ini");
+			$server_arr = parse_ini_file($dir_cnf."server.ini");
 			foreach($server_arr as $key => $value){
 				if(isset($this->_srvars["HTTP_HOST"]) && $this->_srvars["HTTP_HOST"] == $value){
 					$this->site_info["server"] = $key;
@@ -133,7 +135,11 @@ class Hanauta{
 		}
 
 		// キャリア設定
-		$this->carrier = $this->obj["mobile"]->get_carrier();
+		if(isset($this->_srvars["HTTP_USER_AGENT"]) && $this->_srvars["HTTP_USER_AGENT"]){
+			$this->carrier = $this->obj["mobile"]->get_carrier();
+		}else{
+			$this->carrier = "pc";
+		}
 
 		// エラーコード設定
 		// プロジェクト側にあればそちらを優先
@@ -177,6 +183,17 @@ class Hanauta{
 			$db_arr = parse_ini_file($srv_cnf_dir.$fw_arr["INI_DB"]);
 			$this->site_info["db_prefix"] = $db_arr["DB_PREFIX"];
 		}
+
+		// 接続時の日時等
+		$this->time_info = array(
+				"year" => gmdate("Y",time() + $this->site_info["time_zone"]),
+				"mon" => gmdate("m",time() + $this->site_info["time_zone"]),
+				"day" => gmdate("d",time() + $this->site_info["time_zone"]),
+				"week" => gmdate("w",time() + $this->site_info["time_zone"]),
+				"time_h" => gmdate("H",time() + $this->site_info["time_zone"]),
+				"time_i" => gmdate("i",time() + $this->site_info["time_zone"]),
+				"time_s" => gmdate("s",time() + $this->site_info["time_zone"]),
+		);
 	}
 
 	/**

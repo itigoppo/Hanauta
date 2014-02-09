@@ -1188,5 +1188,29 @@ class string{
 		$rtn = $day[$week];
 		return $rtn;
 	}
+
+	/**
+	 * 日付フォーマット
+	 *
+	 * @access public
+	 * @param date		$date		変換元日付
+	 * @param string	$format		変換フォーマット
+	 * @return date		date
+	 */
+	function format_date($date,$stamp=false,$format="Y/m/d H:i:s"){
+		$rtn = NULL;
+		$data = NULL;
+
+		if(!$stamp){
+			$date_arr = preg_replace("/^(\w+) (\w+) (\d+) ([\d:]+) (\+0000) (\d+)$/i","$1,$3 $2 $6 $5 $4",$date);
+			$data = strtotime(str_replace("+0000 ","",$date_arr." GMT"));
+		}else{
+			$data = $date;
+		}
+		$data = date($format,$data);
+
+		$rtn = $data;
+		return $rtn;
+	}
 }
 ?>

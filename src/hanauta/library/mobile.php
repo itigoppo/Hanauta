@@ -87,9 +87,9 @@ class mobile{
 			$str = "willcom";
 		}elseif(strpos($agent,"iPhone") !== false || strpos($agent,"iPod") !== false){
 			$str = "iphone";
-        }elseif(strpos($agent,"Nintendo Wii;") !== false || strpos($agent,"Nitro") !== false || strpos($agent,"PlayStation Portable") !== false || strpos($agent,"PLAYSTATION 3;") !== false){
+		}elseif(strpos($agent,"Nintendo Wii;") !== false || strpos($agent,"Nitro") !== false || strpos($agent,"PlayStation Portable") !== false || strpos($agent,"PLAYSTATION 3;") !== false){
 			$str = "other";
-        }elseif(strpos($agent,"L-MODE") !== false || strpos($agent,"EGBROWSER") !== false || strpos($agent,"AveFront") !== false || strpos($agent,"ASTEL") !== false || strpos($agent,"PDXGW") !== false){
+		}elseif(strpos($agent,"L-MODE") !== false || strpos($agent,"EGBROWSER") !== false || strpos($agent,"AveFront") !== false || strpos($agent,"ASTEL") !== false || strpos($agent,"PDXGW") !== false){
 			$str = "other";
 		}else{
 			$str = "pc";
@@ -116,31 +116,38 @@ class mobile{
 		$agent = $_SERVER["HTTP_USER_AGENT"];
 		$env = $this->check_agent($agent);
 
-        if($env === "docomo"){
-            if(preg_match("/ser([a-zA-Z0-9]+)/",$agent, $dprg)){
-                if(strlen($dprg[1]) === 11){
+		if($env === "docomo"){
+			if(preg_match("/ser([a-zA-Z0-9]+)/",$agent,$dprg)){
+				if(strlen($dprg[1]) === 11){
 					// FOMA以外
-                    $ser = $dprg[1];
-                }elseif(strlen($dprg[1]) === 15){
+					$ser = $dprg[1];
+				}elseif(strlen($dprg[1]) === 15){
 					// FOMA
-                    $ser = $dprg[1];
-                    if(preg_match("/icc([a-zA-Z0-9]+)/",$agent, $dpeg)){
-                        if(strlen($dpeg[1]) === 20){
-                            $icc = $dpeg[1];
-                        }
-                    }
-                }
-            }
-            $dgd = $_SERVER['HTTP_X_DCMGUID'];
-        }elseif($env === "softbank"){
-            if(preg_match("/\/SN([a-zA-Z0-9]+)\//",$agent,$vprg)){
-                $srn = $vprg[1];
-            }
-            $sud = $_SERVER['HTTP_X_JPHONE_UID'];
-        }elseif($env === "au"){
-            $ezn = $_SERVER['HTTP_X_UP_SUBNO'];
-        }
-		$rtn = array($ser,$icc,$dgd,$srn,$sud,$ezn);
+					$ser = $dprg[1];
+					if(preg_match("/icc([a-zA-Z0-9]+)/",$agent,$dpeg)){
+						if(strlen($dpeg[1]) === 20){
+							$icc = $dpeg[1];
+						}
+					}
+				}
+			}
+			$dgd = $_SERVER['HTTP_X_DCMGUID'];
+		}elseif($env === "softbank"){
+			if(preg_match("/\/SN([a-zA-Z0-9]+)\//",$agent,$vprg)){
+				$srn = $vprg[1];
+			}
+			$sud = $_SERVER['HTTP_X_JPHONE_UID'];
+		}elseif($env === "au"){
+			$ezn = $_SERVER['HTTP_X_UP_SUBNO'];
+		}
+		$rtn = array(
+				$ser,
+				$icc,
+				$dgd,
+				$srn,
+				$sud,
+				$ezn
+		);
 
 		return $rtn;
 	}
