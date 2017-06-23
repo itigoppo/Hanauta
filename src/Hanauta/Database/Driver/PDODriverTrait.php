@@ -64,4 +64,62 @@ trait PDODriverTrait
         $statement = $this->_connection->prepare($query);
         return new PDOStatement($statement, $this);
     }
+
+    /**
+     * transaction start
+     *
+     * @return bool
+     */
+    public function beginTransaction()
+    {
+        $this->connect();
+        if ($this->_connection->inTransaction()) {
+            return true;
+        }
+
+        return $this->_connection->beginTransaction();
+    }
+
+    /**
+     * transaction commit
+     *
+     * @return bool
+     */
+    public function commitTransaction()
+    {
+        $this->connect();
+        if (!$this->_connection->inTransaction()) {
+            return false;
+        }
+
+        return $this->_connection->commit();
+    }
+
+    /**
+     * transaction rollback
+     *
+     * @return bool
+     */
+    public function rollbackTransaction()
+    {
+        $this->connect();
+        if (!$this->_connection->inTransaction()) {
+            return false;
+        }
+
+        return $this->_connection->rollback();
+    }
+
+    /**
+     * get last id
+     *
+     * @param string|null $table 取得したいテーブル名
+     * @return string
+     */
+    public function lastInsertId($table = null)
+    {
+        $this->connect();
+
+        return $this->_connection->lastInsertId($table);
+    }
 }
