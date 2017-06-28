@@ -1,4 +1,11 @@
 <?php
+/**
+ * Hanauta : Development Library
+ *
+ * @author Hisato Sakanoue <itigoppo+github@gmail.com>
+ * @copyright Copyright(c) Hisato Sakanoue <itigoppo+github@gmail.com>
+ * @since 2.0.0
+ */
 
 namespace Hanauta\Database;
 
