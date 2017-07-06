@@ -20,7 +20,7 @@ class MySqlTest extends \PHPUnit_Framework_TestCase
             'database' => getenv('DATABASE_NAME'),
         ]);
 
-        $sth = $driver->prepare('show databases');
+        $sth = $driver->prepare('show tables');
         $sth->execute();
 
         var_dump($sth->fetchAll());
